@@ -6,8 +6,7 @@ import { UserRepository } from "./persistense/user.repository";
 export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
 
-    create(data: any): UserEntity {
-        const user = new UserEntity();
-        return this.userRepository.save(user);
+    create(data: Partial<UserEntity>): UserEntity {
+        return this.userRepository.save(UserEntity.from(data));
     }
 }

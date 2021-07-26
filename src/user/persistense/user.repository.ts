@@ -3,22 +3,23 @@ import { UserEntity } from "./user.entity";
 
 @Injectable()
 export class UserRepository {
-    private readonly storage: Map<any, UserEntity>;
+    private readonly storage: Set<UserEntity> = new Set();
 
-    constructor() {
-        this.storage = new Map();
+    save(entity: UserEntity): UserEntity {
+        this.storage.add(entity);
+        return entity;
     }
 
-    save(data: UserEntity): UserEntity {
-        this.storage.set(data.id, data);
-        return data;
+    findById(id: string): UserEntity {
+        for (const entity of this.storage.values()) {
+            if (entity.id === id) {
+                return entity;
+            }
+        }
+        return null;
     }
 
-    getById(id: string): UserEntity {
-        return this.storage.get(id);
-    }
-
-    remove(id: string): void {
-        this.storage.delete(id);
+    remove(entity: UserEntity): void {
+        this.storage.delete(entity);
     }
 }
