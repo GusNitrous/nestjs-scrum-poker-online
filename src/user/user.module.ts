@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { UserRepository } from "./persistense/user.repository";
+import { UserRepository } from "./persistence/user.repository";
 import { UserService } from "./user.service";
 
 @Module({

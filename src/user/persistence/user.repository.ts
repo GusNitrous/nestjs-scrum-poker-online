@@ -10,13 +10,12 @@ export class UserRepository {
         return entity;
     }
 
-    findById(id: string): UserEntity {
+    findById(id: string): UserEntity | undefined {
         for (const entity of this.storage.values()) {
             if (entity.id === id) {
                 return entity;
             }
         }
-        return null;
     }
 
     remove(entity: UserEntity): void {
