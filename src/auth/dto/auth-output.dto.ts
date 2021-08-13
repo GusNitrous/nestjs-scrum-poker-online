@@ -1,8 +1,8 @@
 import { UserRole } from "src/user/constants/user-role";
-import { UserEntity } from "src/user/persistence/user.entity";
+import { User } from "src/user/persistence/user.entity";
 
 export class AuthOutputDto {
-    static fromUser(data: Partial<UserEntity>): AuthOutputDto {
+    static fromUser(data: Partial<User>): AuthOutputDto {
         const authData = new AuthOutputDto();
         authData.userId = data.id;
         authData.userName = data.name;
