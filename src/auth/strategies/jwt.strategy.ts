@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { UserEntity } from "src/user/persistence/user.entity";
+import { User } from "src/user/persistence/user.entity";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class Jwt2Strategy extends PassportStrategy(Strategy) {
     constructor(config: ConfigService) {
         super({
             secretOrKey: config.get<string>("JWT_SECRET"),
@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    validate({ id }: Pick<UserEntity, "id">): string {
+    validate({ id }: Pick<User, "id">): string {
         return id;
     }
 }
