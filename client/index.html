@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="http://localhost:3000/socket.io/socket.io.min.js"></script>
+</head>
+<body>
+	<!-- Registration -->
+	<label>
+		Registration
+		<input id="inputRegister" type="text" />
+	</label>
+	<button id="btnRegister" type="button">Register</button>
+
+	<hr>
+	<br/>
+
+	<!-- Creating room -->
+	<input id="inputRoomId" type="text" />
+	<button id="btnCreateRoom" type="button">CreateRoom</button>
+	<button id="btnConnectRoom" type="button">JoinRoom</button>
+
+	<script src="./events.js"></script>
+	<script src="./utils.js"></script>
+	<script src="./index.js"></script>
+</body>
+</html>
