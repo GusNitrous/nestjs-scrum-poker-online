@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 import { User } from "src/user/persistence/user.entity";
 
 @Injectable()
-export class Jwt2Strategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(config: ConfigService) {
         super({
             secretOrKey: config.get<string>("JWT_SECRET"),
