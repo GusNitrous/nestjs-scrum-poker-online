@@ -13,8 +13,9 @@ export class AuthService {
             name: dto.userName,
             role: dto.role,
         });
-        const token = await this.login(newUser.id);
-        return AuthOutputDto.fromUser(newUser).addJwt({ token });
+        return AuthOutputDto.fromUser(newUser).addJwt({
+            token: await this.login(newUser.id),
+        });
     }
 
     login(userId: string): Promise<string> {
