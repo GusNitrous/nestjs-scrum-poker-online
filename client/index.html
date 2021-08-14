@@ -9,15 +9,33 @@
 		Registration
 		<input id="inputRegister" type="text" />
 	</label>
-	<button id="btnRegister" type="button">Register</button>
+	<button 
+		id="btnRegister" 
+		type="button" 
+		onclick="register()">
+		Register
+	</button>
 
 	<hr>
 	<br/>
 
-	<!-- Creating room -->
-	<input id="inputRoomId" type="text" />
-	<button id="btnCreateRoom" type="button">CreateRoom</button>
-	<button id="btnConnectRoom" type="button">JoinRoom</button>
+	<button 
+		id="btnCreateRoom" 
+		type="button" 
+		onclick="createRoom()">
+		CreateRoom
+	</button>
+
+	<hr>
+	<br />
+
+	<label>
+		<!-- Join to room -->
+		<input id="inputRoomId" type="text" />
+	</label>
+	<button id="btnConnectRoom" onclick="joinRoom()" type="button">
+		JoinRoom
+	</button>
 
 	<script src="./events.js"></script>
 	<script src="./utils.js"></script>
