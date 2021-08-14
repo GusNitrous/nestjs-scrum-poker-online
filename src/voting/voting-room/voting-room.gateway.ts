@@ -1,5 +1,5 @@
 import { Logger, UseGuards } from "@nestjs/common";
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from "@nestjs/websockets";
+import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, WsException } from "@nestjs/websockets";
 import { WebSocketServer } from "@nestjs/websockets";
 import { ConnectedSocket } from "@nestjs/websockets";
 import { SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
@@ -27,30 +27,30 @@ export class VotingRoomGateway {
 
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(CREATE_ROOM)
-    create(@WsCurrentUser() currentUser: User, @MessageBody() payload: any, @ConnectedSocket() socket: Socket): void {
-        this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${JSON.stringify(payload)}`);
-
-        console.log("current_user", currentUser);
-
+    create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): void {
+        this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${JSON.stringify(currentUser)}`);
         const roomId = currentUser.id;
 
-        // if (socket.rooms.has(roomId)) {
-        //     this.logger.debug(`CREATING_ERROR => ${roomId}`);
-
-        //     socket.send("creating-error", "Room already exists");
-        //     return;
-        // }
+        if (socket.rooms.has(roomId)) {
+            this.logger.debug(`CREATING_ERROR => ${roomId}`);
+            throw new WsException("Room already exists");
+        }
 
         socket.join(roomId);
-
         this.server.to(socket.id).emit(ROOM_CREATED, roomId);
-        // socket.to(roomId).emit("room-created", `CreatedRoom => ${roomId}`);
     }
 
+    @UseGuards(JwtWsGuard)
     @SubscribeMessage(JOIN_ROOM)
-    join(@MessageBody() payload: any, @ConnectedSocket() socket: Socket): void {
+    join(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket, @MessageBody() payload: any): void {
+        const rooms = this.server.of("/").adapter.rooms;
+        if (!rooms || !rooms.has(payload.roomId)) {
+            throw new WsException("Room not found");
+        }
+
         socket.join(payload.roomId);
-        socket.to(payload.roomId).emit("room-join", { userId: payload.userId });
+        this.server.to(socket.id).emit("JOINED_TO_ROOM", payload.roomId);
+        socket.to(payload.roomId).emit("USER_JOINED", { userId: currentUser.id });
     }
 
     @SubscribeMessage(DELETE_ROOM)
