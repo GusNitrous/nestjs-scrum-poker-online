@@ -16,7 +16,15 @@ export class UserRepository {
         return entity;
     }
 
-    findById(id: UserId): User | undefined {
+    findByUserName(userName: string): User {
+        for (const entity of this.storage.values()) {
+            if (entity.name === userName) {
+                return entity;
+            }
+        }
+    }
+
+    findById(id: UserId): User {
         for (const entity of this.storage.values()) {
             if (entity.id === id) {
                 return entity;
