@@ -5,18 +5,14 @@ export type UserId = string;
 
 export class User {
     public static from(data: Partial<User>): User {
-        const newUser = new User();
-        newUser.name = data.name;
-        newUser.role = data.role;
-        newUser.createdAt = new Date();
-        return newUser;
+        return new User().populate(data);
     }
 
     public name: string;
 
     public role: UserRole;
 
-    public createdAt: Date;
+    public createdAt: Date = new Date();
 
     public updatedAt: Date;
 
@@ -36,7 +32,7 @@ export class User {
         return this._id;
     }
 
-    pupulate(data: Partial<User>): this {
+    populate(data: Partial<User>): this {
         this.name = data.name;
         this.role = data.role;
         this.updatedAt = new Date();
