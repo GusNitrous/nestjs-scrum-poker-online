@@ -10,6 +10,10 @@ export class UserService {
         return Promise.resolve(this.userRepository.save(User.from(data)));
     }
 
+    findByUserName(userName: string): Promise<User> {
+        return Promise.resolve(this.userRepository.findByUserName(userName));
+    }
+
     findById(userId: UserId): Promise<User> {
         return Promise.resolve(this.userRepository.findById(userId));
     }
