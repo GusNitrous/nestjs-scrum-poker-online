@@ -1,6 +1,5 @@
-import { Logger } from "@nestjs/common";
-import { Injectable } from "@nestjs/common";
-import { User, UserId } from "./user.entity";
+import { Injectable, Logger } from '@nestjs/common';
+import { User, UserId } from './user.entity';
 
 @Injectable()
 export class UserRepository {
@@ -33,6 +32,7 @@ export class UserRepository {
     }
 
     remove(entity: User): void {
+        this.logger.debug(`REMOVE_USER => ${entity.id}`);
         this.storage.delete(entity);
         this.logger.debug(`USER_STORAGE_AFTER_REMOVE => ${JSON.stringify([...this.storage])}`);
     }
