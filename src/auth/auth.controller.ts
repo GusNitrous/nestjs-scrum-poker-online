@@ -41,8 +41,15 @@ export class AuthController {
         return this.authService.register(dto);
     }
 
-    @Post("/logout")
-    logout(): any {
-        return "logout";
+    @UseGuards(JwtHttpGuard)
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @Post('/logout')
+    async logout(@CurrentUserId() userId: string): Promise<void> {
+        this.logger.debug(`LOGOUT => ${userId}`);
+        const user = await this.userService.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        await this.userService.remove(user);
     }
 }
