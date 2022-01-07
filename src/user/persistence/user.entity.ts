@@ -1,5 +1,5 @@
-import { UserRole } from "../constants/user-role";
-import { v4 as uuidv4 } from "uuid";
+import { UserRole } from '../constants/user-role';
+import { v4 as uuidv4 } from 'uuid';
 
 export type UserId = string;
 
@@ -16,17 +16,7 @@ export class User {
 
     public updatedAt: Date;
 
-    public createdRoomIds: Set<string>;
-
-    public socketIds: Set<string>;
-
     private readonly _id: UserId = uuidv4();
-
-    constructor() {
-        this.createdAt = new Date();
-        this.createdRoomIds = new Set();
-        this.socketIds = new Set();
-    }
 
     get id(): string {
         return this._id;

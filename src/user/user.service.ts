@@ -4,22 +4,22 @@ import { UserRepository } from './persistence/user.repository';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {
+    constructor(private readonly repository: UserRepository) {
     }
 
     async create(data: Partial<User>): Promise<User> {
-        return this.userRepository.save(User.from(data));
+        return this.repository.save(User.from(data));
     }
 
-    async findByUserName(userName: string): Promise<User> {
-        return this.userRepository.findByUserName(userName);
+    async findByName(userName: string): Promise<User> {
+        return this.repository.findByUserName(userName);
     }
 
     async findById(userId: UserId): Promise<User> {
-        return this.userRepository.findById(userId);
+        return this.repository.findById(userId);
     }
 
     async remove(user: User): Promise<void> {
-        this.userRepository.remove(user);
+        this.repository.remove(user);
     }
 }

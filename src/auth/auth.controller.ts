@@ -34,7 +34,7 @@ export class AuthController {
     )
     async register(@Body() dto: AuthInputDto): Promise<AuthOutputDto> {
         this.logger.debug(`REGISTRATION => ${dto.userName}`);
-        const user = await this.userService.findByUserName(dto.userName);
+        const user = await this.userService.findByName(dto.userName);
         if (user) {
             throw new BadRequestException('User exists');
         }
