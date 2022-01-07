@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import {
     ConnectedSocket,
     MessageBody,
@@ -8,20 +8,14 @@ import {
     WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtWsGuard } from 'src/auth/guards/jwt-ws.guard';
-import { User } from 'src/user/persistence/user.entity';
-import { UserService } from 'src/user/user.service';
-import {
-    CREATE_ROOM,
-    DELETE_ROOM,
-    JOIN_USER,
-    RECEIVE_MESSAGE,
-    ROOM_CREATED,
-    SEND_MESSAGE,
-    USER_JOINED,
-    USER_JOINED_TO_ROOM,
-} from './events';
+import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
+import { User } from '../../user/persistence/user.entity';
+import { UserService } from '../../user/user.service';
+import { CREATE_ROOM, JOIN_USER, ROOM_CREATED, USER_JOINED, USER_JOINED_TO_ROOM } from './events';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
+import { RoomService } from '../../room/room.service';
+import { Room } from '../../room/persistence/room.entity';
+import { RoomDto } from './dto/room.dto';
 
 // Room Gateway
 @WebSocketGateway({
@@ -36,64 +30,56 @@ export class VotingRoomGateway {
     @WebSocketServer()
     private readonly server: Server;
 
-    constructor(private readonly userService: UserService) {
-    }
-
-    @UseGuards(JwtWsGuard)
-    @SubscribeMessage(SEND_MESSAGE)
-    sendMessage(@ConnectedSocket() socket: Socket, @MessageBody() payload: any): void {
-        this.logger.debug(`REQUEST_ON_SEND_MESSAGE_TO_ROOM => ${JSON.stringify(payload)}`);
-
-        const rooms = this.getAllRooms();
-        const roomId = payload.roomId;
-        if (!rooms || !rooms.has(roomId)) {
-            this.logger.debug(`SEND_MESSAGE_TO_ROOM_ERROR => ${roomId}`);
-            throw new WsException('Room not found');
-        }
-        socket.to(roomId).emit(RECEIVE_MESSAGE, payload.message);
+    constructor(
+        private readonly userService: UserService,
+        private readonly roomStateService: RoomService,
+    ) {
     }
 
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(CREATE_ROOM)
-    create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): void {
+    async create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
         this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${JSON.stringify(currentUser)}`);
-
-        const rooms = this.server.of('/').adapter.rooms;
-
-        const roomId = currentUser.id;
-        // if (!rooms || rooms.has(roomId)) {
-        //     this.logger.debug(`CREATING_ERROR => ${roomId}`);
-        //     throw new WsException("Room already exists");
-        // }
-        socket.join(roomId);
-        this.server.to(socket.id).emit(ROOM_CREATED, roomId);
+        const roomState = await this.roomStateService.createByOwner(currentUser);
+        socket.join(roomState.id);
+        this.server.to(socket.id).emit(ROOM_CREATED, roomState.id);
     }
 
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(JOIN_USER)
-    join(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket, @MessageBody() payload: any): void {
-        this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(payload)}`);
-
-        const rooms = this.getAllRooms();
-
-        console.log('payload', payload);
-        console.log(rooms);
-
-        if (!rooms || !rooms.has(payload?.roomId)) {
-            this.logger.debug('Room not found');
+    async join(
+        @WsCurrentUser() currentUser: User,
+        @ConnectedSocket() socket: Socket,
+        @MessageBody('roomId', ParseUUIDPipe) roomId: string,
+    ): Promise<void> {
+        this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
+        const roomState = await this.roomStateService.findByUID(roomId);
+        if (!roomState || !this.hasServerRoom(roomId)) {
+            await this.roomStateService.remove(roomState);
+            this.logger.error('Room not found');
             throw new WsException('Room not found');
         }
 
-        socket.join(payload.roomId);
-        this.server.to(socket.id).emit(USER_JOINED, payload.roomId);
-        socket.to(payload.roomId).emit(USER_JOINED_TO_ROOM, currentUser.id);
+        const dto = RoomDto.from(roomState.addUser(currentUser));
+        socket.on('disconnect', async (reason) => {
+            await this.onDisconnectSocket(roomState, reason);
+        }).join(roomId);
+        socket.to(roomId).emit(USER_JOINED_TO_ROOM, dto);
+        this.server.to(socket.id).emit(USER_JOINED, dto);
     }
 
-    @SubscribeMessage(DELETE_ROOM)
-    delete(@MessageBody() payload: any, @ConnectedSocket() socket: Socket): void {
+    private async onDisconnectSocket(roomState: Room, reason?: string): Promise<void> {
+        this.logger.warn(`SOCKET_DISCONNECT => ${reason}`);
+        if (!this.hasServerRoom(roomState.id)) {
+            await this.roomStateService.remove(roomState);
+        }
     }
 
-    private getAllRooms(namespace = '/'): Map<any, Set<string>> {
+    private hasServerRoom(roomId: string): boolean {
+        return this.getRooms()?.has(roomId);
+    }
+
+    private getRooms(namespace = '/'): Map<any, Set<string>> {
         return this.server.of(namespace).adapter.rooms;
     }
 }

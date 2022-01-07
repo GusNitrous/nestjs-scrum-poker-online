@@ -1,13 +1,12 @@
-import { Module } from "@nestjs/common";
-import { VotingController } from "./voting.controller";
-import { VotingService } from "./voting.service";
-import { VotingRoomGateway } from "./voting-room/voting-room.gateway";
-import { VotingEventGateway } from "./voting-event/voting-event.gateway";
-import { UserModule } from "src/user/user.module";
+import { Module } from '@nestjs/common';
+import { VotingRoomGateway } from './voting-room/voting-room.gateway';
+import { VotingEventGateway } from './voting-event/voting-event.gateway';
+import { UserModule } from 'src/user/user.module';
+import { RoomModule } from '../room/room.module';
 
 @Module({
-    imports: [UserModule],
-    controllers: [VotingController],
-    providers: [VotingService, VotingRoomGateway, VotingEventGateway],
+    imports: [UserModule, RoomModule],
+    providers: [VotingRoomGateway, VotingEventGateway],
 })
-export class VotingModule {}
+export class VotingModule {
+}
