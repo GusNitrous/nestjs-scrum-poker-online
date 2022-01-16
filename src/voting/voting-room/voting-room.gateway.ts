@@ -54,16 +54,14 @@ export class VotingRoomGateway {
     ): Promise<void> {
         this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
         const roomState = await this.roomStateService.findByUID(roomId);
-        if (!roomState || !this.hasServerRoom(roomId)) {
-            await this.roomStateService.remove(roomState);
+        if (!roomState) {
             this.logger.error('Room not found');
             throw new WsException('Room not found');
         }
 
         const dto = RoomDto.from(roomState.addUser(currentUser));
-        socket.on('disconnect', async (reason) => {
-            await this.onDisconnectSocket(roomState, reason);
-        }).join(roomId);
+
+        socket.join(roomId);
         socket.to(roomId).emit(USER_JOINED_TO_ROOM, dto);
         this.server.to(socket.id).emit(USER_JOINED, dto);
     }
