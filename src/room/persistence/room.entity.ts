@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { User, UserId } from '../../user/persistence/user.entity';
 
 export type RoomUID = string;
@@ -9,7 +9,7 @@ export class Room {
         return new Room().populate(data);
     }
 
-    public uid: RoomUID = uuidv4();
+    public uid: RoomUID = randomUUID();
 
     public ownerId: UserId;
 

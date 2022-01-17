@@ -1,5 +1,5 @@
 import { UserRole } from '../constants/user-role';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export type UserId = string;
 
@@ -16,7 +16,7 @@ export class User {
 
     public updatedAt: Date;
 
-    private readonly _id: UserId = uuidv4();
+    private readonly _id: UserId = randomUUID();
 
     get id(): string {
         return this._id;
