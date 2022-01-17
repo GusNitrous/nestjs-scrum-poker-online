@@ -1,5 +1,7 @@
-import { randomUUID } from 'crypto';
 import { User, UserId } from '../../user/persistence/user.entity';
+import {customAlphabet} from 'nanoid';
+
+const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
 
 export type RoomUID = string;
 
@@ -9,7 +11,7 @@ export class Room {
         return new Room().populate(data);
     }
 
-    public uid: RoomUID = randomUUID();
+    public uid: RoomUID = nanoid();
 
     public ownerId: UserId;
 
