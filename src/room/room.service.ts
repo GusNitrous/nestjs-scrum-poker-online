@@ -9,14 +9,7 @@ export class RoomService {
     }
 
     async createByOwner(owner: User): Promise<Room> {
-        const room = new Room()
-            .setOwnerId(owner.id)
-            .addUser(owner);
-        return this.repository.save(room);
-    }
-
-    async create(data: Partial<Room>): Promise<Room> {
-        return this.repository.save(Room.from(data));
+        return this.repository.save(new Room(owner));
     }
 
     async findByUID(uid: RoomUID): Promise<Room> {

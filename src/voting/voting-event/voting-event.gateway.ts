@@ -1,57 +1,52 @@
-import { Logger } from "@nestjs/common";
-import { OnGatewayConnection } from "@nestjs/websockets";
-import { OnGatewayDisconnect } from "@nestjs/websockets";
-import { WebSocketServer } from "@nestjs/websockets";
-import { OnGatewayInit } from "@nestjs/websockets";
-import { SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
-import { Socket, Server } from "socket.io";
+import { Logger, UseGuards } from '@nestjs/common';
+import { ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { RoomService } from '../../room/room.service';
+import { SEND_SCORE, SHOW_RESULTS, VOTING_START, VOTING_STOP } from './events';
+import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
+import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
+import { User } from '../../user/persistence/user.entity';
 
+
+// Voting Gateway
 @WebSocketGateway({
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
     },
 })
-export class VotingEventGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class VotingEventGateway {
     private readonly logger = new Logger(VotingEventGateway.name);
 
     @WebSocketServer()
     server: Server;
 
-    afterInit(server: Server) {
-        // console.log("afterInit", server);
+    constructor(
+        private readonly roomStateService: RoomService,
+    ) {}
+
+
+    @UseGuards(JwtWsGuard)
+    @SubscribeMessage(VOTING_START)
+    async start(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
+
     }
 
-    handleConnection(socket: Socket) {
-        console.log("handleConnection_VotingEventGateway", socket.rooms);
+    @UseGuards(JwtWsGuard)
+    @SubscribeMessage(VOTING_STOP)
+    async stop(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
+
     }
 
-    handleDisconnect(socket: Socket) {
-        // console.log("handleDisconnect", socket);
+    @UseGuards(JwtWsGuard)
+    @SubscribeMessage(SEND_SCORE)
+    async sendScore(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
+
     }
 
-    @SubscribeMessage("start")
-    start(client: any, payload: any): string {
-        return "voting start";
-    }
+    @UseGuards(JwtWsGuard)
+    @SubscribeMessage(SHOW_RESULTS)
+    async showResults(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
 
-    @SubscribeMessage("stop")
-    stop(client: any, payload: any): string {
-        return "voting stop";
-    }
-
-    @SubscribeMessage("estimate")
-    estimate(client: any, payload: any): string {
-        return "estimate";
-    }
-
-    @SubscribeMessage("showResult")
-    showResult(client: any, payload: any): string {
-        return "show result";
-    }
-
-    @SubscribeMessage("clearEstimate")
-    clearEstimate(client: any, payload: any): string {
-        return "clear estimate";
     }
 }

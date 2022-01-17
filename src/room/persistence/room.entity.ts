@@ -1,5 +1,6 @@
-import { User, UserId } from '../../user/persistence/user.entity';
-import {customAlphabet} from 'nanoid';
+import { User } from '../../user/persistence/user.entity';
+import { customAlphabet } from 'nanoid';
+import { RoomState } from '../room-state';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
 
@@ -7,26 +8,21 @@ export type RoomUID = string;
 
 // Room data entity
 export class Room {
-    public static from(data: Partial<Room>): Room {
-        return new Room().populate(data);
-    }
+    public owner: User;
 
-    public uid: RoomUID = nanoid();
-
-    public ownerId: UserId;
+    public id: RoomUID = nanoid();
 
     public users = new Set<User>();
 
-    public createdAt: Date = new Date();
+    public createdAt = new Date();
 
-    public get id(): string {
-        return this.uid;
-    }
+    public lastActivity = new Date();
 
-    public populate(data: Partial<Room>): this {
-        this.uid = data?.uid;
-        this.ownerId = data?.ownerId;
-        return this;
+    public state = new RoomState();
+
+    constructor(owner: User) {
+        this.owner = owner;
+        this.addUser(owner);
     }
 
     addUser(user: User): this {
@@ -39,8 +35,8 @@ export class Room {
         return this;
     }
 
-    setOwnerId(id: UserId): this {
-        this.ownerId = id;
+    updateLastActivity(): this {
+        this.lastActivity = new Date();
         return this;
     }
 }
