@@ -17,7 +17,7 @@ export class RoomRepository {
 
     findByUID(uid: RoomUID): Room {
         for (const entity of this.storage.values()) {
-            if (entity.uid === uid) {
+            if (entity.id === uid) {
                 return entity;
             }
         }
