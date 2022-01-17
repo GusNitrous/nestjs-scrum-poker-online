@@ -1,4 +1,4 @@
-import { Logger, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
     ConnectedSocket,
     MessageBody,
@@ -50,7 +50,7 @@ export class VotingRoomGateway {
     async join(
         @WsCurrentUser() currentUser: User,
         @ConnectedSocket() socket: Socket,
-        @MessageBody('roomId', ParseUUIDPipe) roomId: string,
+        @MessageBody('roomId') roomId: string,
     ): Promise<void> {
         this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
         const roomState = await this.roomStateService.findByUID(roomId);
