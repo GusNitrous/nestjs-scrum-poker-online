@@ -3,6 +3,6 @@ export class VotingResult {
        public avg: number,
        public max: number,
        public min: number,
-       public byScores: number,
+       public byScores: number[][],
     ) {}
 }
