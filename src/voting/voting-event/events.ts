@@ -1,8 +1,15 @@
-export const VOTING_START  = 'VOTING_START';
+export const VOTING_START = 'VOTING_START';
 
-export const VOTING_STOP  = 'VOTING_STOP';
+export const VOTING_STARTED = 'VOTING_STARTED';
 
-export const SEND_SCORE  = 'SEND_SCORE';
+export const VOTING_FINISH = 'VOTING_FINISH';
 
-export const SHOW_RESULTS  = 'SHOW_RESULTS';
+export const VOTING_FINISHED = 'VOTING_FINISHED';
 
+export const SEND_SCORE = 'SEND_SCORE';
+
+export const SCORE_DISPATCH = 'SCORE_DISPATCH';
+
+export const SHOW_RESULTS = 'SHOW_RESULTS';
+
+export const DISPATCH_RESULTS = 'DISPATCH_RESULTS';
