@@ -53,7 +53,7 @@ export class VotingRoomGateway {
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
         this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
-        const roomState = await this.roomStateService.findByUID(roomId);
+        const roomState = await this.roomStateService.findById(roomId);
         if (!roomState) {
             this.logger.error('Room not found');
             throw new WsException('Room not found');

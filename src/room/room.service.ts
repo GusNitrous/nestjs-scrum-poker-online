@@ -12,12 +12,12 @@ export class RoomService {
         return this.repository.save(new Room(owner));
     }
 
-    async findByUID(uid: RoomUID): Promise<Room> {
-        return this.repository.findByUID(uid);
+    async findById(uid: RoomUID): Promise<Room> {
+        return this.repository.findById(uid);
     }
 
     async removeByUID(uid: RoomUID): Promise<void> {
-        const room = this.repository.findByUID(uid);
+        const room = this.repository.findById(uid);
         if (room) {
             this.repository.remove(room);
         }

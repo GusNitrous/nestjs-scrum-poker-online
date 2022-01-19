@@ -2,6 +2,7 @@ import { User } from '../../user/persistence/user.entity';
 import { customAlphabet } from 'nanoid';
 import { VotingRound } from '../voting-round';
 import { VotingResult } from '../voting-result';
+import { Logger } from '@nestjs/common';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
 
@@ -9,6 +10,8 @@ export type RoomUID = string;
 
 // Room data entity
 export class Room {
+    private readonly logger = new Logger(Room.name);
+
     public owner: User;
 
     public id: RoomUID = nanoid();
@@ -54,17 +57,25 @@ export class Room {
         return this;
     }
 
-    startVoting(): this {
+    startVoting(): void {
+        this.logger.debug(`ROOM_START_VOTING => ${this.id}`);
+
         this.updateLastActivity();
         this.voting = new VotingRound(this);
-        return this;
+
+        this.logger.debug(`ROOM_AFTER_START_VOTING => ${JSON.stringify([...this.users])}`);
     }
 
     stopVoting(): VotingResult {
+        this.logger.debug(`ROOM_STOP_VOTING => ${this.id}`);
+
         this.updateLastActivity();
         const result = this.voting.getResult();
         this.results.add(result);
         this.voting = null;
+
+        this.logger.debug(`ROOM_AFTER_STOP_VOTING => ${JSON.stringify(this)}`);
+
         return result;
     }
 }
