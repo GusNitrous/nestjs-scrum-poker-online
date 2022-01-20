@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { RoomService } from '../../room/room.service';
-import { SEND_SCORE, SHOW_RESULTS, VOTING_FINISH, VOTING_START, VOTING_STARTED } from './events';
+import { SEND_SCORE, SHOW_RESULTS, VOTING_FINISH, VOTING_FINISHED, VOTING_START, VOTING_STARTED } from './events';
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { User } from '../../user/persistence/user.entity';
@@ -58,18 +58,31 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
-        console.log('--- VOTING_STOP ---', socket);
+        const room = await this.roomStateService.findById(roomId);
+        if (!room) {
+            throw new WsException('Room not found');
+        }
+        const result = room.stopVoting();
+        this.server.to(roomId).emit(VOTING_FINISHED, result);
     }
 
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(SEND_SCORE)
-    async sendScore(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
+    async sendScore(
+        @WsCurrentUser() currentUser: User,
+        @ConnectedSocket() socket: Socket,
+        @MessageBody('roomId') roomId: string,
+    ): Promise<void> {
 
     }
 
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(SHOW_RESULTS)
-    async showResults(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
+    async showResults(
+        @WsCurrentUser() currentUser: User,
+        @ConnectedSocket() socket: Socket,
+        @MessageBody('roomId') roomId: string,
+    ): Promise<void> {
 
     }
 }
