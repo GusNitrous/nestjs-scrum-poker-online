@@ -9,7 +9,15 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { RoomService } from '../../room/room.service';
-import { SEND_SCORE, SHOW_RESULTS, VOTING_FINISH, VOTING_FINISHED, VOTING_START, VOTING_STARTED } from './events';
+import {
+    SCORE_DISPATCH,
+    SEND_SCORE,
+    SHOW_RESULTS,
+    VOTING_FINISH,
+    VOTING_FINISHED,
+    VOTING_START,
+    VOTING_STARTED,
+} from './events';
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { User } from '../../user/persistence/user.entity';
@@ -71,9 +79,14 @@ export class VotingEventGateway {
     async sendScore(
         @WsCurrentUser() currentUser: User,
         @ConnectedSocket() socket: Socket,
-        @MessageBody('roomId') roomId: string,
+        @MessageBody() { roomId, score }: { roomId: string, score: number },
     ): Promise<void> {
-
+        const room = await this.roomStateService.findById(roomId);
+        if (!room) {
+            throw new WsException('Room not found');
+        }
+        const userScore = room.addScore(currentUser, score);
+        this.server.to(roomId).emit(SCORE_DISPATCH, userScore);
     }
 
     @UseGuards(JwtWsGuard)

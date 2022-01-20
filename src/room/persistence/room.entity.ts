@@ -3,6 +3,7 @@ import { customAlphabet } from 'nanoid';
 import { VotingRound } from '../voting-round';
 import { VotingResult } from '../voting-result';
 import { Logger } from '@nestjs/common';
+import { Score } from '../score';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
 
@@ -77,5 +78,11 @@ export class Room {
         this.logger.debug(`ROOM_AFTER_STOP_VOTING => ${JSON.stringify(this)}`);
 
         return result;
+    }
+
+    addScore(user: User, scoreValue: number): Score {
+        const score = new Score(user.id, scoreValue);
+        this.voting.addScore(score);
+        return score;
     }
 }
