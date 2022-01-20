@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RoomRepository } from './persistence/room.repository';
-import { Room, RoomUID } from './persistence/room.entity';
+import { Room, RoomId } from './persistence/room.entity';
 import { User } from '../user/persistence/user.entity';
 
 @Injectable()
@@ -12,12 +12,12 @@ export class RoomService {
         return this.repository.save(new Room(owner));
     }
 
-    async findById(uid: RoomUID): Promise<Room> {
-        return this.repository.findById(uid);
+    async findById(id: RoomId): Promise<Room> {
+        return this.repository.findById(id);
     }
 
-    async removeByUID(uid: RoomUID): Promise<void> {
-        const room = this.repository.findById(uid);
+    async removeById(id: RoomId): Promise<void> {
+        const room = this.repository.findById(id);
         if (room) {
             this.repository.remove(room);
         }

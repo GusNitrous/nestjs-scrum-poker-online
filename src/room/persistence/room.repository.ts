@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Room, RoomUID } from './room.entity';
+import { Room, RoomId } from './room.entity';
 
 @Injectable()
 export class RoomRepository {
@@ -15,7 +15,7 @@ export class RoomRepository {
         return entity;
     }
 
-    findById(id: RoomUID): Room {
+    findById(id: RoomId): Room {
         for (const entity of this.storage.values()) {
             if (entity.id === id) {
                 return entity;

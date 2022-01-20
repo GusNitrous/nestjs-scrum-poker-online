@@ -7,7 +7,7 @@ import { Score } from '../score';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
 
-export type RoomUID = string;
+export type RoomId = string;
 
 // Room data entity
 export class Room {
@@ -15,7 +15,7 @@ export class Room {
 
     public owner: User;
 
-    public id: RoomUID = nanoid();
+    public id: RoomId = nanoid();
 
     public users = new Set<User>();
 
