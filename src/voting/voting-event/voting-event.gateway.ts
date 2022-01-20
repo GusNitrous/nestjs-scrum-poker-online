@@ -85,6 +85,9 @@ export class VotingEventGateway {
         if (!room) {
             throw new WsException('Room not found');
         }
+        if (!room.hasActiveVoting) {
+            throw new WsException('Room has no active voting');
+        }
         const userScore = room.addScore(currentUser, score);
         this.server.to(roomId).emit(SCORE_DISPATCH, userScore);
     }
