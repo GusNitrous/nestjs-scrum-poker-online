@@ -49,6 +49,8 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody() { roomId, restart }: any,
     ): Promise<void> {
+        this.logger.debug(`${VOTING_START} => ${roomId}`);
+
         const room = await this.roomService.getById(roomId);
         if (room.hasActiveVoting && !restart) {
             throw new WsException('Room already has active voting');
@@ -64,6 +66,8 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
+        this.logger.debug(`${VOTING_FINISH} => ${roomId}`);
+
         const voting = await this.roomService.getVotingByRoomId(roomId);
         voting.stop();
         this.server.to(roomId).emit(VOTING_FINISHED);
@@ -76,6 +80,8 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody() { roomId, score }: { roomId: string, score: number },
     ): Promise<void> {
+        this.logger.debug(`${SEND_SCORE} => ROOM: ${roomId} SCORE: ${score}`);
+
         const voting = await this.roomService.getVotingByRoomId(roomId);
         const userScore = voting.addScore(currentUser.id, score);
         this.server.to(roomId).emit(SCORE_DISPATCH, userScore);
@@ -88,6 +94,8 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
+        this.logger.debug(`${SHOW_RESULTS} => ${roomId}`);
+
         const voting = await this.roomService.getVotingByRoomId(roomId);
         const result = voting.getResult();
         this.server.to(roomId).emit(DISPATCH_RESULTS, result);

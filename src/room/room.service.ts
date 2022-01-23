@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RoomRepository } from './persistence/room.repository';
 import { Room, RoomId } from './persistence/room.entity';
 import { User } from '../user/persistence/user.entity';
@@ -6,6 +6,8 @@ import { VotingRound } from './voting-round';
 
 @Injectable()
 export class RoomService {
+    private readonly logger = new Logger(RoomService.name);
+
     constructor(private readonly repository: RoomRepository) {
     }
 
@@ -16,6 +18,7 @@ export class RoomService {
     async getById(id: RoomId): Promise<Room> {
         const room = this.repository.findById(id);
         if (!room) {
+            this.logger.error('Room not found');
             throw new Error('Room not found');
         }
         return room;
