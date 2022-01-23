@@ -1,12 +1,5 @@
 import { Logger, UseGuards } from '@nestjs/common';
-import {
-    ConnectedSocket,
-    MessageBody,
-    SubscribeMessage,
-    WebSocketGateway,
-    WebSocketServer,
-    WsException,
-} from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { User } from '../../user/persistence/user.entity';
@@ -53,12 +46,7 @@ export class VotingRoomGateway {
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
         this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
-        const roomState = await this.roomStateService.findById(roomId);
-        if (!roomState) {
-            this.logger.error('Room not found');
-            throw new WsException('Room not found');
-        }
-
+        const roomState = await this.roomStateService.getById(roomId);
         const dto = RoomDto.from(roomState.addUser(currentUser));
 
         socket.join(roomId);
