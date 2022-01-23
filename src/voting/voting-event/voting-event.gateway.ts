@@ -56,7 +56,11 @@ export class VotingEventGateway {
             throw new WsException('Room already has active voting');
         }
         room.startVoting();
-        this.server.to(roomId).emit(VOTING_STARTED, new Date());
+        const dto = {
+            ownerId: currentUser.id,
+            createdAt: new Date(),
+        };
+        socket.to(roomId).emit(VOTING_STARTED, dto);
     }
 
     @UseGuards(JwtWsGuard)
@@ -70,7 +74,7 @@ export class VotingEventGateway {
 
         const voting = await this.roomService.getVotingByRoomId(roomId);
         voting.stop();
-        this.server.to(roomId).emit(VOTING_FINISHED);
+        socket.to(roomId).emit(VOTING_FINISHED);
     }
 
     @UseGuards(JwtWsGuard)
@@ -84,7 +88,7 @@ export class VotingEventGateway {
 
         const voting = await this.roomService.getVotingByRoomId(roomId);
         const userScore = voting.addScore(currentUser.id, score);
-        this.server.to(roomId).emit(SCORE_DISPATCH, userScore);
+        socket.to(roomId).emit(SCORE_DISPATCH, userScore);
     }
 
     @UseGuards(JwtWsGuard)
@@ -98,6 +102,6 @@ export class VotingEventGateway {
 
         const voting = await this.roomService.getVotingByRoomId(roomId);
         const result = voting.getResult();
-        this.server.to(roomId).emit(DISPATCH_RESULTS, result);
+        socket.to(roomId).emit(DISPATCH_RESULTS, result);
     }
 }
