@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { RoomService } from '../../room/room.service';
 import {
+    DISPATCH_RESULTS,
     SCORE_DISPATCH,
     SEND_SCORE,
     SHOW_RESULTS,
@@ -37,7 +38,7 @@ export class VotingEventGateway {
     server: Server;
 
     constructor(
-        private readonly roomStateService: RoomService,
+        private readonly roomService: RoomService,
     ) {
     }
 
@@ -46,13 +47,10 @@ export class VotingEventGateway {
     async start(
         @WsCurrentUser() currentUser: User,
         @ConnectedSocket() socket: Socket,
-        @MessageBody('roomId') roomId: string,
+        @MessageBody() { roomId, restart }: any,
     ): Promise<void> {
-        const room = await this.roomStateService.findById(roomId);
-        if (!room) {
-            throw new WsException('Room not found');
-        }
-        if (room.hasActiveVoting) {
+        const room = await this.roomService.getById(roomId);
+        if (room.hasActiveVoting && !restart) {
             throw new WsException('Room already has active voting');
         }
         room.startVoting();
@@ -66,12 +64,9 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
-        const room = await this.roomStateService.findById(roomId);
-        if (!room) {
-            throw new WsException('Room not found');
-        }
-        const result = room.stopVoting();
-        this.server.to(roomId).emit(VOTING_FINISHED, result);
+        const voting = await this.roomService.getVotingByRoomId(roomId);
+        voting.stop();
+        this.server.to(roomId).emit(VOTING_FINISHED);
     }
 
     @UseGuards(JwtWsGuard)
@@ -81,14 +76,8 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody() { roomId, score }: { roomId: string, score: number },
     ): Promise<void> {
-        const room = await this.roomStateService.findById(roomId);
-        if (!room) {
-            throw new WsException('Room not found');
-        }
-        if (!room.hasActiveVoting) {
-            throw new WsException('Room has no active voting');
-        }
-        const userScore = room.addScore(currentUser, score);
+        const voting = await this.roomService.getVotingByRoomId(roomId);
+        const userScore = voting.addScore(currentUser.id, score);
         this.server.to(roomId).emit(SCORE_DISPATCH, userScore);
     }
 
