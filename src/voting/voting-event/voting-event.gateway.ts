@@ -88,7 +88,7 @@ export class VotingEventGateway {
 
         const voting = await this.roomService.getVotingByRoomId(roomId);
         const userScore = voting.addScore(currentUser.id, score);
-        socket.to(roomId).emit(SCORE_DISPATCH, userScore);
+        this.server.in(roomId).emit(SCORE_DISPATCH, userScore);
     }
 
     @UseGuards(JwtWsGuard)
