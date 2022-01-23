@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RoomRepository } from './persistence/room.repository';
 import { Room, RoomId } from './persistence/room.entity';
 import { User } from '../user/persistence/user.entity';
+import { VotingRound } from './voting-round';
 
 @Injectable()
 export class RoomService {
@@ -18,6 +19,10 @@ export class RoomService {
             throw new Error('Room not found');
         }
         return room;
+    }
+
+    async getVotingByRoomId(roomId: RoomId): Promise<VotingRound> {
+        return (await this.getById(roomId)).getActiveVoting();
     }
 
     async removeById(id: RoomId): Promise<void> {
