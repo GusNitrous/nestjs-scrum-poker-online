@@ -88,6 +88,8 @@ export class VotingEventGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
-
+        const voting = await this.roomService.getVotingByRoomId(roomId);
+        const result = voting.getResult();
+        this.server.to(roomId).emit(DISPATCH_RESULTS, result);
     }
 }
