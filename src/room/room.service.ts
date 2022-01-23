@@ -12,8 +12,12 @@ export class RoomService {
         return this.repository.save(new Room(owner));
     }
 
-    async findById(id: RoomId): Promise<Room> {
-        return this.repository.findById(id);
+    async getById(id: RoomId): Promise<Room> {
+        const room = this.repository.findById(id);
+        if (!room) {
+            throw new Error('Room not found');
+        }
+        return room;
     }
 
     async removeById(id: RoomId): Promise<void> {
