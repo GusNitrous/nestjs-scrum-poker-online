@@ -50,17 +50,15 @@ export class VotingEventGateway {
         @MessageBody() { roomId, restart }: any,
     ): Promise<void> {
         this.logger.debug(`${VOTING_START} => ${roomId}`);
-
         const room = await this.roomService.getById(roomId);
         if (room.hasActiveVoting && !restart) {
             throw new WsException('Room already has active voting');
         }
         room.startVoting();
-        const dto = {
+        socket.to(roomId).emit(VOTING_STARTED, {
             ownerId: currentUser.id,
             createdAt: new Date(),
-        };
-        socket.to(roomId).emit(VOTING_STARTED, dto);
+        });
     }
 
     @UseGuards(JwtWsGuard)
@@ -82,7 +80,7 @@ export class VotingEventGateway {
     async sendScore(
         @WsCurrentUser() currentUser: User,
         @ConnectedSocket() socket: Socket,
-        @MessageBody() { roomId, score }: { roomId: string, score: number },
+        @MessageBody() { roomId, score }: { roomId: string, score: string },
     ): Promise<void> {
         this.logger.debug(`${SEND_SCORE} => ROOM: ${roomId} SCORE: ${score}`);
 
