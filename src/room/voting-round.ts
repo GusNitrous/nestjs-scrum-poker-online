@@ -38,7 +38,11 @@ export class VotingRound {
         return this;
     }
 
-    addScore(userId: UserId, scoreValue: number): Score {
+    findScoreByUserId(userId: UserId): Score {
+        return this.scores.find((score) => score.userId === userId);
+    }
+
+    addScore(userId: UserId, scoreValue: string): Score {
         this.room.updateLastActivity();
         const score = new Score(userId, scoreValue);
         this._scores.add(score);
