@@ -6,12 +6,16 @@ import { UserId } from '../user/persistence/user.entity';
 
 export class VotingRound {
     public status: VotingStatus = VotingStatus.Waiting;
-    public scores = new Set<Score>();
     public room: Room;
+    private _scores = new Set<Score>();
 
     constructor(room: Room) {
         this.room = room;
         this.start();
+    }
+
+    get scores(): Score[] {
+        return [...this._scores];
     }
 
     get isActive(): boolean {
@@ -37,15 +41,15 @@ export class VotingRound {
     addScore(userId: UserId, scoreValue: number): Score {
         this.room.updateLastActivity();
         const score = new Score(userId, scoreValue);
-        this.scores.add(score);
+        this._scores.add(score);
         return score;
     }
 
     getResult(): any {
         this.room.updateLastActivity();
-        if (!this.isFinished || this.scores.size === 0) {
+        if (!this.isFinished || this._scores.size === 0) {
             throw new Error('Round is not finished or has empty scores');
         }
-        return new VotingResult(this.scores);
+        return new VotingResult(this._scores);
     }
 }
