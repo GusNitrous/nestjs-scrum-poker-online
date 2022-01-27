@@ -21,15 +21,20 @@ export class Room {
 
     public results = new Set<VotingResult>();
 
-    private voting: VotingRound = null;
+    public voting: VotingRound = null;
+
+    private _users = new Set<User>();
 
     constructor(owner: User) {
         this.owner = owner;
-        this.addUser(owner);
     }
 
     get hasActiveVoting(): boolean {
         return this.voting?.isActive;
+    }
+
+    get users(): User[] {
+        return [...this._users];
     }
 
     getActiveVoting(): VotingRound {
@@ -42,13 +47,13 @@ export class Room {
 
     addUser(user: User): this {
         this.updateLastActivity();
-        this.users.add(user);
+        this._users.add(user);
         return this;
     }
 
     removeUser(user: User): this {
         this.updateLastActivity();
-        this.users.delete(user);
+        this._users.delete(user);
         return this;
     }
 
