@@ -1,5 +1,5 @@
 import { Logger, UseGuards } from '@nestjs/common';
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, } from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { User } from '../../user/persistence/user.entity';
@@ -34,6 +34,7 @@ export class VotingRoomGateway {
     async create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
         this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${JSON.stringify(currentUser)}`);
         const roomState = await this.roomStateService.createByOwner(currentUser);
+        roomState.addUser(currentUser).startVoting();
         socket.join(roomState.id);
         this.server.to(socket.id).emit(ROOM_CREATED, roomState.id);
     }
