@@ -1,10 +1,9 @@
 import { User } from '../../user/persistence/user.entity';
-import { customAlphabet } from 'nanoid';
 import { VotingRound } from '../voting-round';
 import { VotingResult } from '../voting-result';
 import { Logger } from '@nestjs/common';
+import { uuid } from '../../common/utils/uuid';
 
-const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
 
 export type RoomId = string;
 
@@ -14,9 +13,7 @@ export class Room {
 
     public owner: User;
 
-    public id: RoomId = nanoid();
-
-    public users = new Set<User>();
+    public id: RoomId = uuid();
 
     public createdAt = new Date();
 
