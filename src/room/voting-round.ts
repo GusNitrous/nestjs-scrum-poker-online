@@ -4,6 +4,7 @@ import { VotingStatus } from './constants/voting-status';
 import { VotingResult } from './voting-result';
 import { UserId } from '../user/persistence/user.entity';
 
+
 export class VotingRound {
     public status: VotingStatus = VotingStatus.Waiting;
     public room: Room;
@@ -14,7 +15,7 @@ export class VotingRound {
         this.start();
     }
 
-    get scores(): Score[] {
+    getScores(): Score[] {
         return [...this._scores];
     }
 
@@ -39,7 +40,11 @@ export class VotingRound {
     }
 
     findScoreByUserId(userId: UserId): Score {
-        return this.scores.find((score) => score.userId === userId);
+        for (const score of this._scores) {
+            if (score.userId === userId) {
+                return score;
+            }
+        }
     }
 
     addScore(userId: UserId, scoreValue: string): Score {

@@ -33,7 +33,7 @@ export class Room {
         return this.voting?.isActive;
     }
 
-    get users(): User[] {
+    getUsers(): User[] {
         return [...this._users];
     }
 
@@ -63,8 +63,16 @@ export class Room {
     }
 
     startVoting(): void {
-        this.logger.debug(`ROOM_START_VOTING => ${this.id}`);
+        this.logger.debug(`ROOM_START_VOTING => ${this.toJson()}`);
         this.voting = new VotingRound(this);
-        this.logger.debug(`ROOM_AFTER_START_VOTING => ${JSON.stringify([...this.users])}`);
+        this.logger.debug(`ROOM_AFTER_START_VOTING => ${this.toJson()}`);
+    }
+
+    toJson(): string {
+        return JSON.stringify({
+            id: this.id,
+            users: this.getUsers(),
+            createdAt: this.createdAt,
+        });
     }
 }

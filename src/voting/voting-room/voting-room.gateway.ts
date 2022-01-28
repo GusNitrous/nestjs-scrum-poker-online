@@ -48,11 +48,11 @@ export class VotingRoomGateway {
     ): Promise<void> {
         this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
         const roomState = await this.roomStateService.getById(roomId);
-        const dto = RoomDto.from(roomState.addUser(currentUser));
+        const roomDto = RoomDto.from(roomState.addUser(currentUser));
 
         socket.join(roomId);
-        socket.to(roomId).emit(USER_JOINED_TO_ROOM, dto);
-        this.server.to(socket.id).emit(USER_JOINED, dto);
+        socket.to(roomId).emit(USER_JOINED_TO_ROOM, roomDto);
+        this.server.to(socket.id).emit(USER_JOINED, roomDto);
     }
 
     private async onDisconnectSocket(roomState: Room, reason?: string): Promise<void> {
