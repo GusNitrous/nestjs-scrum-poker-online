@@ -22,6 +22,7 @@ import {
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { User } from '../../user/persistence/user.entity';
+import { RoomDto } from '../voting-room/dto/room.dto';
 
 
 // Voting Gateway
@@ -55,10 +56,7 @@ export class VotingEventGateway {
             throw new WsException('Room already has active voting');
         }
         room.startVoting();
-        socket.to(roomId).emit(VOTING_STARTED, {
-            ownerId: currentUser.id,
-            createdAt: new Date(),
-        });
+        this.server.in(roomId).emit(VOTING_STARTED, RoomDto.from(room));
     }
 
     @UseGuards(JwtWsGuard)
@@ -99,7 +97,7 @@ export class VotingEventGateway {
         this.logger.debug(`${SHOW_RESULTS} => ${roomId}`);
 
         const voting = await this.roomService.getVotingByRoomId(roomId);
-        const result = voting.getResult();
-        socket.to(roomId).emit(DISPATCH_RESULTS, result);
+        const result = voting.stop().getResult();
+        this.server.in(roomId).emit(DISPATCH_RESULTS, result);
     }
 }

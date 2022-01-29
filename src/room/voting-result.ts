@@ -8,6 +8,7 @@ export class VotingResult {
 
     constructor(scores: Score[]) {
         this.scores = scores;
+        this.calc();
     }
 
     calc(): this {
