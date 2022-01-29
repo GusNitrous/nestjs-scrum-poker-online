@@ -6,4 +6,9 @@ export class Score {
         public value: string,
     ) {
     }
+
+    setValue(value: string): this {
+        this.value = value;
+        return this;
+    }
 }
