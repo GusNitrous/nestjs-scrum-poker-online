@@ -7,6 +7,10 @@ export class Score {
     ) {
     }
 
+    getValue(): number {
+        return Number(this.value);
+    }
+
     setValue(value: string): this {
         this.value = value;
         return this;

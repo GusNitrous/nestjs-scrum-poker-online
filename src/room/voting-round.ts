@@ -55,11 +55,11 @@ export class VotingRound {
         return userScore;
     }
 
-    getResult(): any {
+    getResult(): VotingResult {
         this.room.updateLastActivity();
         if (!this.isFinished || this._scores.size === 0) {
             throw new Error('Round is not finished or has empty scores');
         }
-        return new VotingResult(this._scores);
+        return new VotingResult(this.getScores());
     }
 }
