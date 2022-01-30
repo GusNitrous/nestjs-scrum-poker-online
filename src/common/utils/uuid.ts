@@ -1,3 +1,5 @@
 import { customAlphabet } from 'nanoid';
 
-export const uuid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 10);
+const alphabet = '0123456789abcdefghijklmnopqrstuvwxyz';
+
+export const uuid = (size = 10) => customAlphabet(alphabet, size)();
