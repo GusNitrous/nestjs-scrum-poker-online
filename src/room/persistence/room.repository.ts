@@ -8,10 +8,9 @@ export class RoomRepository {
     private readonly storage = new Set<Room>();
 
     save(entity: Room): Room {
-        this.logger.debug(`SAVE_ROOM => ${JSON.stringify(entity)}`);
+        this.logger.debug(`SAVE_ROOM => ${entity.toJson()}`);
         this.storage.add(entity);
         this.logger.debug(`ROOM_STORAGE_AFTER_SAVE => ${JSON.stringify([...this.storage])}`);
-
         return entity;
     }
 
