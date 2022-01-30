@@ -11,7 +11,6 @@ export class RoomRepository {
     save(entity: Room): Room {
         this.logger.debug(`SAVE_ROOM => ${entity.toJson()}`);
         this.storage.add(entity);
-        this.logger.debug(`ROOM_STORAGE_AFTER_SAVE => ${JSON.stringify([...this.storage])}`);
         return entity;
     }
 
@@ -26,7 +25,6 @@ export class RoomRepository {
     remove(entity: Room): void {
         this.logger.debug(`REMOVE_ROOM => ${entity.id}`);
         this.storage.delete(entity);
-        this.logger.debug(`ROOM_STORAGE_AFTER_REMOVE => ${JSON.stringify([...this.storage])}`);
     }
 
     async removeUserFromRooms(user: User): Promise<void> {
