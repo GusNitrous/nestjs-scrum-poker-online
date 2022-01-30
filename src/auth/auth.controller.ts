@@ -50,6 +50,6 @@ export class AuthController {
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        await this.userService.remove(user);
+        await this.authService.logout(user);
     }
 }

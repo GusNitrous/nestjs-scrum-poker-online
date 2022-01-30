@@ -40,4 +40,8 @@ export class RoomService {
             this.repository.remove(entity);
         }
     }
+
+    async removeUserFromRooms(user: User): Promise<void> {
+        await this.repository.removeUserFromRooms(user);
+    }
 }

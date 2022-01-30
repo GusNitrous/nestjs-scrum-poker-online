@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Room, RoomId } from './room.entity';
+import { User } from '../../user/persistence/user.entity';
 
 @Injectable()
 export class RoomRepository {
@@ -28,4 +29,9 @@ export class RoomRepository {
         this.logger.debug(`ROOM_STORAGE_AFTER_REMOVE => ${JSON.stringify([...this.storage])}`);
     }
 
+    async removeUserFromRooms(user: User): Promise<void> {
+        this.storage.forEach((room) => {
+            room.removeUser(user);
+        });
+    }
 }

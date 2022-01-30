@@ -1,15 +1,17 @@
-import { Module } from "@nestjs/common";
-import { UserModule } from "src/user/user.module";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { PassportModule } from "@nestjs/passport";
-import { JwtModule } from "@nestjs/jwt";
-import { getJwtConfig } from "src/config/jwt.config";
-import { JwtStrategy } from "./strategies/jwt.strategy";
-import { ConfigService } from "@nestjs/config";
+import { Module } from '@nestjs/common';
+import { UserModule } from 'src/user/user.module';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { getJwtConfig } from 'src/config/jwt.config';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { ConfigService } from '@nestjs/config';
+import { RoomModule } from '../room/room.module';
 
 @Module({
     imports: [
+        RoomModule,
         UserModule,
         PassportModule,
         JwtModule.registerAsync({
@@ -20,4 +22,5 @@ import { ConfigService } from "@nestjs/config";
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule {
+}
