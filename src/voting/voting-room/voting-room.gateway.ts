@@ -32,7 +32,7 @@ export class VotingRoomGateway {
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(CREATE_ROOM)
     async create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
-        this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${JSON.stringify(currentUser)}`);
+        this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${currentUser.toJson()}`);
         const roomState = await this.roomStateService.createByOwner(currentUser);
         roomState.addUser(currentUser).startVoting();
         socket.join(roomState.id);
@@ -46,7 +46,7 @@ export class VotingRoomGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
-        this.logger.debug(`REQUEST_ON_JOIN_USER => ${JSON.stringify(roomId)}`);
+        this.logger.debug(`REQUEST_ON_JOIN_USER => ${roomId}`);
         const roomState = await this.roomStateService.getById(roomId);
         const roomDto = RoomDto.from(roomState.addUser(currentUser));
 
