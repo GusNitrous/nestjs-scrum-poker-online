@@ -30,6 +30,6 @@ export class User {
     }
 
     toJson(): string {
-        return JSON.stringify({ ...this, id: this.id });
+        return JSON.stringify(this);
     }
 }
