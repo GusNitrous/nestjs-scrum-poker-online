@@ -7,11 +7,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from 'src/config/jwt.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
-import { RoomModule } from '../room/room.module';
 
 @Module({
     imports: [
-        RoomModule,
         UserModule,
         PassportModule,
         JwtModule.registerAsync({
