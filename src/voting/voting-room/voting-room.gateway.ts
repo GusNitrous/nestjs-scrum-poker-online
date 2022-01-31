@@ -7,8 +7,8 @@ import { UserService } from '../../user/user.service';
 import { CREATE_ROOM, JOIN_USER, ROOM_CREATED, USER_JOINED, USER_JOINED_TO_ROOM } from './events';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { RoomService } from '../../room/room.service';
-import { Room } from '../../room/persistence/room.entity';
 import { RoomDto } from './dto/room.dto';
+import { OnEvent } from '@nestjs/event-emitter';
 
 // Room Gateway
 @WebSocketGateway({
@@ -55,11 +55,9 @@ export class VotingRoomGateway {
         this.server.to(socket.id).emit(USER_JOINED, roomDto);
     }
 
-    private async onDisconnectSocket(roomState: Room, reason?: string): Promise<void> {
-        this.logger.warn(`SOCKET_DISCONNECT => ${reason}`);
-        if (!this.hasServerRoom(roomState.id)) {
-            await this.roomStateService.remove(roomState);
-        }
+    @OnEvent('user.removed')
+    removeUser(removedUser: User): void {
+        this.logger.warn(`USER_REMOVED => ${removedUser.toJson()}`);
     }
 
     private hasServerRoom(roomId: string): boolean {

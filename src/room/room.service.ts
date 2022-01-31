@@ -3,12 +3,16 @@ import { RoomRepository } from './persistence/room.repository';
 import { Room, RoomId } from './persistence/room.entity';
 import { User } from '../user/persistence/user.entity';
 import { VotingRound } from './voting-round';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class RoomService {
     private readonly logger = new Logger(RoomService.name);
 
-    constructor(private readonly repository: RoomRepository) {
+    constructor(
+        private readonly repository: RoomRepository,
+        private readonly eventEmitter: EventEmitter2,
+    ) {
     }
 
     async createByOwner(owner: User): Promise<Room> {
@@ -43,5 +47,6 @@ export class RoomService {
 
     async removeUserFromRooms(user: User): Promise<void> {
         await this.repository.removeUserFromRooms(user);
+        this.eventEmitter.emit('user.removed', user);
     }
 }
