@@ -4,6 +4,8 @@ export const ROOM_CREATED = 'ROOM_CREATED';
 
 export const JOIN_USER = 'JOIN_USER';
 
+export const USER_LEAVE = 'USER_LEAVE';
+
 export const USER_JOINED = 'USER_JOINED';
 
 export const SEND_MESSAGE = 'SEND_MESSAGE';

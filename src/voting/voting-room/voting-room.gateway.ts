@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { User } from '../../user/persistence/user.entity';
 import { UserService } from '../../user/user.service';
-import { CREATE_ROOM, JOIN_USER, ROOM_CREATED, USER_JOINED, USER_JOINED_TO_ROOM } from './events';
+import { CREATE_ROOM, JOIN_USER, ROOM_CREATED, USER_JOINED, USER_JOINED_TO_ROOM, USER_LEAVE } from './events';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { RoomService } from '../../room/room.service';
 import { RoomDto } from './dto/room.dto';
@@ -55,9 +55,11 @@ export class VotingRoomGateway {
         this.server.to(socket.id).emit(USER_JOINED, roomDto);
     }
 
-    @OnEvent('user.removed')
-    removeUser(removedUser: User): void {
-        this.logger.warn(`USER_REMOVED => ${removedUser.toJson()}`);
+    @OnEvent('user.logout')
+    async userLeave(user: User): Promise<void> {
+        this.logger.debug(`${USER_LEAVE} => ${user.toJson()}`);
+        await this.roomStateService.removeUserFromRooms(user);
+        this.server.emit(USER_LEAVE, user.id);
     }
 
     private hasServerRoom(roomId: string): boolean {
