@@ -1,12 +1,15 @@
 import { Score } from './score';
 
 export class VotingResult {
+    public roundId: number;
     public avg: number;
     public max: number;
     public min: number;
     public scores: Score[];
+    public createdAt: number = Date.now();
 
-    constructor(scores: Score[]) {
+    constructor(roundId: number, scores: Score[]) {
+        this.roundId = roundId;
         this.scores = scores;
         this.calc();
     }
