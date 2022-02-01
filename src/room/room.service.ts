@@ -3,6 +3,7 @@ import { RoomRepository } from './persistence/room.repository';
 import { Room, RoomId } from './persistence/room.entity';
 import { User } from '../user/persistence/user.entity';
 import { VotingRound } from './voting-round';
+import { VotingResult } from './voting-result';
 
 @Injectable()
 export class RoomService {
@@ -28,6 +29,11 @@ export class RoomService {
 
     async getVotingByRoomId(roomId: RoomId): Promise<VotingRound> {
         return (await this.getById(roomId)).getActiveVoting();
+    }
+
+    async finishVoting(roomId: RoomId): Promise<VotingResult> {
+        const room = await this.getById(roomId);
+        return room.finishVoting();
     }
 
     async removeById(id: RoomId): Promise<void> {

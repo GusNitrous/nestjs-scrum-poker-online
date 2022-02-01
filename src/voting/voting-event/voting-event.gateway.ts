@@ -88,16 +88,15 @@ export class VotingEventGateway {
     }
 
     @UseGuards(JwtWsGuard)
+    // TODO change event name
     @SubscribeMessage(SHOW_RESULTS)
-    async showResults(
+    async finishVoting(
         @WsCurrentUser() currentUser: User,
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
         this.logger.debug(`${SHOW_RESULTS} => ${roomId}`);
-
-        const voting = await this.roomService.getVotingByRoomId(roomId);
-        const result = voting.stop().getResult();
+        const result = await this.roomService.finishVoting(roomId);
         this.server.in(roomId).emit(DISPATCH_RESULTS, result);
     }
 }
