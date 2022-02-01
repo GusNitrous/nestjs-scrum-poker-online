@@ -25,6 +25,8 @@ export class Room {
 
     private _users = new Set<User>();
 
+    private _votingCounter: number = 0;
+
     constructor(owner: User) {
         this.owner = owner;
     }
@@ -61,15 +63,28 @@ export class Room {
         return this;
     }
 
+    startVoting(): void {
+        this.logger.debug(`ROOM_START_VOTING => ${this.toJson()}`);
+        this.voting = new VotingRound(this);
+        this.logger.debug(`ROOM_AFTER_START_VOTING => ${this.toJson()}`);
+    }
+
+    finishVoting(): VotingResult {
+        const result = this.getActiveVoting()
+            .stop()
+            .getResult();
+        this.voting = null;
+        this.results.add(result);
+        return result;
+    }
+
     updateLastActivity(): this {
         this.lastActivity = new Date();
         return this;
     }
 
-    startVoting(): void {
-        this.logger.debug(`ROOM_START_VOTING => ${this.toJson()}`);
-        this.voting = new VotingRound(this);
-        this.logger.debug(`ROOM_AFTER_START_VOTING => ${this.toJson()}`);
+    incVotingCounter(): number {
+        return ++this._votingCounter;
     }
 
     toJson(): string {

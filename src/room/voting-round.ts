@@ -6,11 +6,13 @@ import { UserId } from '../user/persistence/user.entity';
 
 
 export class VotingRound {
+    public id: number;
     public status: VotingStatus = VotingStatus.Waiting;
     public room: Room;
     private _scores = new Set<Score>();
 
     constructor(room: Room) {
+        this.id = room.incVotingCounter();
         this.room = room;
         this.start();
     }
@@ -60,7 +62,7 @@ export class VotingRound {
         if (!this.isFinished || this._scores.size === 0) {
             throw new Error('Round is not finished or has empty scores');
         }
-        return new VotingResult(this.getScores());
+        return new VotingResult(this.id, this.getScores());
     }
 
     toJson(): string {
