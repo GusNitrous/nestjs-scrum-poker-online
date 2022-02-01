@@ -1,5 +1,6 @@
 import { Room } from '../../../room/persistence/room.entity';
 import { VotingDto } from './voting.dto';
+import { ResultDto } from './result.dto';
 
 export class RoomDto {
     static from(room: Room): RoomDto {
@@ -8,6 +9,7 @@ export class RoomDto {
             room.owner.id,
             room.createdAt,
             VotingDto.fromRoom(room),
+            room.getResults().map((result) => ResultDto.fromResult(result)),
         );
     }
 
@@ -16,6 +18,7 @@ export class RoomDto {
         public ownerId: string,
         public createdAt: Date,
         public voting: VotingDto,
+        public latestResults: ResultDto[],
     ) {
     }
 }
