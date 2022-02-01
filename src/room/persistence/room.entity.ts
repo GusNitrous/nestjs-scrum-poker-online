@@ -37,6 +37,10 @@ export class Room {
         return [...this._users];
     }
 
+    getResults(): VotingResult[] {
+        return [...this.results];
+    }
+
     getActiveVoting(): VotingRound {
         this.updateLastActivity();
         if (!this.hasActiveVoting) {
