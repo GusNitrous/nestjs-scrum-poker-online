@@ -4,12 +4,15 @@ import { ResultDto } from './result.dto';
 
 export class RoomDto {
     static from(room: Room): RoomDto {
+        const results = room.getResults()
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .map((result) => ResultDto.fromResult(result));
         return new RoomDto(
             room.id,
             room.owner.id,
             room.createdAt,
             VotingDto.fromRoom(room),
-            room.getResults().map((result) => ResultDto.fromResult(result)),
+            results,
         );
     }
 
@@ -18,7 +21,7 @@ export class RoomDto {
         public ownerId: string,
         public createdAt: Date,
         public voting: VotingDto,
-        public latestResults: ResultDto[],
+        public results: ResultDto[],
     ) {
     }
 }
