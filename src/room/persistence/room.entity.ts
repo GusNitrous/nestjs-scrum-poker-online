@@ -64,9 +64,9 @@ export class Room {
     }
 
     startVoting(): void {
-        this.logger.debug(`ROOM_START_VOTING => ${this.toJson()}`);
+        this.logger.debug('ROOM_START_VOTING => ' + this);
         this.voting = new VotingRound(this);
-        this.logger.debug(`ROOM_AFTER_START_VOTING => ${this.toJson()}`);
+        this.logger.debug('ROOM_AFTER_START_VOTING => ' + this);
     }
 
     finishVoting(): VotingResult {
@@ -87,11 +87,17 @@ export class Room {
         return ++this._votingCounter;
     }
 
-    toJson(): string {
-        return JSON.stringify({
-            id: this.id,
-            users: this.getUsers(),
-            createdAt: this.createdAt,
-        });
+    toPlain(): Record<string, any> {
+        return {
+            [this.constructor.name]: {
+                id: this.id,
+                users: this.getUsers().map((user) => user.toPlain()),
+                createdAt: this.createdAt,
+            },
+        };
+    }
+
+    toString(): string {
+        return JSON.stringify(this.toPlain());
     }
 }

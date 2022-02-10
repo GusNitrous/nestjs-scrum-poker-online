@@ -65,11 +65,17 @@ export class VotingRound {
         return new VotingResult(this.id, this.getScores());
     }
 
-    toJson(): string {
-        return JSON.stringify({
-            status: this.status,
-            room: this.room.id,
-            scores: this.getScores(),
-        });
+    toPlain(): Record<string, any> {
+        return {
+            [this.constructor.name]: {
+                status: this.status,
+                room: this.room.id,
+                scores: this.getScores().map((score) => score.toString()),
+            },
+        };
+    }
+
+    toString(): string {
+        return JSON.stringify(this.toPlain());
     }
 }

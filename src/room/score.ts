@@ -15,4 +15,19 @@ export class Score {
         this.value = value;
         return this;
     }
+
+    toPlain(): Record<string, any> {
+        return {
+            [this.constructor.name]: {
+                constructor: Score.name,
+                userId: this.userId,
+                originalValue: this.value,
+                value: this.getValue(),
+            },
+        };
+    }
+
+    toString(): string {
+        return JSON.stringify(this.toPlain());
+    }
 }

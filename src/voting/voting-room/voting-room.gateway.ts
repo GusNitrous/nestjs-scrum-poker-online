@@ -32,7 +32,7 @@ export class VotingRoomGateway {
     @UseGuards(JwtWsGuard)
     @SubscribeMessage(CREATE_ROOM)
     async create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
-        this.logger.debug(`REQUEST_ON_CREATING_ROOM => ${currentUser.toJson()}`);
+        this.logger.debug('REQUEST_ON_CREATING_ROOM => ' + currentUser);
         const roomState = await this.roomStateService.createByOwner(currentUser);
         roomState.addUser(currentUser).startVoting();
         socket.join(roomState.id);
@@ -57,7 +57,7 @@ export class VotingRoomGateway {
 
     @OnEvent('user.logout')
     async userLeave(user: User): Promise<void> {
-        this.logger.debug(`${USER_LEAVE} => ${user.toJson()}`);
+        this.logger.debug(`${USER_LEAVE} => ` + user);
         await this.roomStateService.removeUserFromRooms(user);
         this.server.emit(USER_LEAVE, user.id);
     }

@@ -29,7 +29,19 @@ export class User {
         return this;
     }
 
-    toJson(): string {
-        return JSON.stringify(this);
+    toPlain(): Record<string, any> {
+        return {
+            [this.constructor.name]: {
+                id: this.id,
+                name: this.name,
+                role: this.role,
+                createdAt: this.createdAt,
+                updatedAt: this.updatedAt,
+            },
+        };
+    }
+
+    toString(): string {
+        return JSON.stringify(this.toPlain());
     }
 }

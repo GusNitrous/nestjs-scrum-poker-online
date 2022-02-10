@@ -8,10 +8,10 @@ export class RoomRepository {
 
     private readonly storage = new Set<Room>();
 
-    save(entity: Room): Room {
-        this.logger.debug(`SAVE_ROOM => ${entity.toJson()}`);
-        this.storage.add(entity);
-        return entity;
+    save(room: Room): Room {
+        this.logger.debug('SAVE_ROOM => ' + room);
+        this.storage.add(room);
+        return room;
     }
 
     findById(id: RoomId): Room {
@@ -22,9 +22,9 @@ export class RoomRepository {
         }
     }
 
-    remove(entity: Room): void {
-        this.logger.debug(`REMOVE_ROOM => ${entity.id}`);
-        this.storage.delete(entity);
+    remove(room: Room): void {
+        this.logger.debug('REMOVE_ROOM => ' + room);
+        this.storage.delete(room);
     }
 
     async removeUserFromRooms(user: User): Promise<void> {
