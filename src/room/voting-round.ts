@@ -29,16 +29,15 @@ export class VotingRound {
         return this.status === VotingStatus.Finished;
     }
 
-    start(): this {
+    start(): void {
         this.room.updateLastActivity();
         this.status = VotingStatus.Active;
-        return this;
     }
 
-    stop(): this {
+    // TODO remove method
+    stop(): void {
         this.room.updateLastActivity();
         this.status = VotingStatus.Finished;
-        return this;
     }
 
     findScoreByUserId(userId: UserId): Score {
@@ -59,7 +58,7 @@ export class VotingRound {
 
     getResult(): VotingResult {
         this.room.updateLastActivity();
-        if (!this.isFinished || this._scores.size === 0) {
+        if (this._scores.size === 0) {
             throw new Error('Round is not finished or has empty scores');
         }
         return new VotingResult(this.id, this.getScores());

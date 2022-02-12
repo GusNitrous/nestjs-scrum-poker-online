@@ -70,9 +70,7 @@ export class Room {
     }
 
     finishVoting(): VotingResult {
-        const result = this.getActiveVoting()
-            .stop()
-            .getResult();
+        const result = this.getActiveVoting()?.getResult();
         this.voting = null;
         this.results.add(result);
         return result;
