@@ -24,7 +24,7 @@ export class UserDto {
     }
 
     addScore(score?: Score): this {
-        this.score = score?.value ?? 'N/A';
+        this.score = score?.value;
         return this;
     }
 }
