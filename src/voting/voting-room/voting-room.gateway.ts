@@ -4,7 +4,15 @@ import { Server, Socket } from 'socket.io';
 import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
 import { User } from '../../user/persistence/user.entity';
 import { UserService } from '../../user/user.service';
-import { CREATE_ROOM, JOIN_USER, ROOM_CREATED, USER_JOINED, USER_JOINED_TO_ROOM, USER_LEAVE } from './events';
+import {
+    CREATE_ROOM,
+    JOIN_USER,
+    LEAVE_ROOM,
+    ROOM_CREATED,
+    USER_JOINED,
+    USER_JOINED_TO_ROOM,
+    USER_LEAVE,
+} from './events';
 import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { RoomService } from '../../room/room.service';
 import { RoomDto } from './dto/room.dto';
@@ -53,6 +61,19 @@ export class VotingRoomGateway {
         socket.join(roomId);
         socket.to(roomId).emit(USER_JOINED_TO_ROOM, roomDto);
         this.server.to(socket.id).emit(USER_JOINED, roomDto);
+    }
+
+    @UseGuards(JwtWsGuard)
+    @SubscribeMessage(LEAVE_ROOM)
+    async leave(
+        @WsCurrentUser() currentUser: User,
+        @ConnectedSocket() socket: Socket,
+        @MessageBody('roomId') roomId: string,
+    ): Promise<void> {
+        this.logger.debug(`REQUEST_ON_LEAVE_FROM_ROOM => ${roomId}`);
+        await this.roomStateService.removeUserFromRooms(currentUser);
+        socket.leave(roomId);
+        this.server.emit(USER_LEAVE, currentUser.id);
     }
 
     @OnEvent('user.logout')
