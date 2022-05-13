@@ -9,7 +9,10 @@ export function IsLogin(validationOption?: ValidationOptions) {
             options: validationOption,
             validator: {
                 validate(value: any): boolean {
-                    return /^[A-Z]+\w{2,}$/i.test(value);
+                    return value && /^[A-Z]+\w{2,}$/i.test(value);
+                },
+                defaultMessage(): string {
+                    return 'Invalid login value';
                 },
             },
         });
