@@ -1,17 +1,21 @@
-import { ConfigService } from "@nestjs/config";
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import config from './config';
+import { Logger } from '@nestjs/common';
 
-async function bootstrap() {
+
+(async () => {
     const corsOptions = {
-        origin: "*",
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204,
     };
 
     const app = await NestFactory.create(AppModule, { cors: corsOptions });
-    const config = app.get(ConfigService);
-    await app.listen(config.get<number>("APP_LISTEN_PORT"));
-}
-bootstrap();
+    await app.listen(config.appPort, config.appHost);
+
+    Logger.verbose(`[SERVER_STARTED] ${config.baseUrl}`);
+})().catch((err) => {
+    Logger.error('[SERVER_STARTING_FAILED] ' + err);
+});
