@@ -19,4 +19,7 @@ export default {
     appHost: parsed.APP_HOST,
     appPort: parsed.APP_PORT,
     baseUrl: parsed.BASE_URL,
+    get jwtSecret(): string {
+        return parsed.JWT_SECRET;
+    },
 };
