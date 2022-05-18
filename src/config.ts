@@ -18,7 +18,5 @@ export default {
     env: parsed.APP_ENV,
     appHost: parsed.APP_HOST,
     appPort: parsed.APP_PORT,
-    get baseUrl() {
-        return `http://${this.appHost}:${this.appPort}`;
-    },
+    baseUrl: parsed.BASE_URL,
 };
