@@ -1,10 +1,10 @@
 import { config } from 'dotenv-safe';
 import { join } from 'path';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const appInfo = require('../package.json');
-
 export const ROOT_DIR = join(__dirname, '..');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const appInfo = require(join(ROOT_DIR, 'package.json'));
 
 const { parsed } = config({
     allowEmptyValues: false,
