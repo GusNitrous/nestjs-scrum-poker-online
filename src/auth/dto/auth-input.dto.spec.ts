@@ -34,7 +34,7 @@ describe('AuthInputDto', () => {
         authInputDto = new AuthInputDto();
     });
 
-    describe('Check "IsLogin" decorator', () => {
+    describe('Check login validation', () => {
         test.each(validLoginValues)('should return empty errors array on valid login values', (loginValue) => {
             authInputDto.userName = loginValue;
             const errors = validateSync(authInputDto);
