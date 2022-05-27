@@ -5,6 +5,7 @@ import { AuthInputDto } from './dto/auth-input.dto';
 import { AuthOutputDto } from './dto/auth-output.dto';
 import { User } from '../user/persistence/user.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AuthEvent } from '../common/app-events/auth-event';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,6 @@ export class AuthService {
     async logout(user: User): Promise<void> {
         this.logger.debug(`REMOVE_USER_AFTER_LOGOUT => ${user.id}`);
         await this.userService.remove(user);
-        this.eventEmitter.emit('user.logout', user);
+        this.eventEmitter.emit(AuthEvent.LOGOUT, user);
     }
 }
