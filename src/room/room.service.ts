@@ -18,21 +18,22 @@ export class RoomService {
         return this.repository.save(new Room(owner));
     }
 
-    async getById(id: RoomId): Promise<Room> {
+    async findById(id: RoomId): Promise<Room> {
         const room = this.repository.findById(id);
         if (!room) {
-            this.logger.error('Room not found');
-            throw new Error('Room not found');
+            const error = new Error('Room not found');
+            this.logger.error(error.message);
+            throw error;
         }
         return room;
     }
 
     async getVotingByRoomId(roomId: RoomId): Promise<VotingRound> {
-        return (await this.getById(roomId)).getActiveVoting();
+        return (await this.findById(roomId)).getActiveVoting();
     }
 
     async finishVoting(roomId: RoomId): Promise<VotingResult> {
-        const room = await this.getById(roomId);
+        const room = await this.findById(roomId);
         return room.finishVoting();
     }
 
