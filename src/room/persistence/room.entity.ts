@@ -63,10 +63,11 @@ export class Room {
         return this;
     }
 
-    startVoting(): void {
+    startVoting(): this {
         this.logger.debug('ROOM_START_VOTING => ' + this);
         this.voting = new VotingRound(this);
         this.logger.debug('ROOM_AFTER_START_VOTING => ' + this);
+        return this;
     }
 
     finishVoting(): VotingResult {
