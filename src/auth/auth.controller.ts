@@ -5,7 +5,6 @@ import {
     HttpCode,
     HttpStatus,
     Logger,
-    NotFoundException,
     Post,
     UseGuards,
     UsePipes,
@@ -16,7 +15,8 @@ import { AuthService } from './auth.service';
 import { AuthInputDto } from './dto/auth-input.dto';
 import { AuthOutputDto } from './dto/auth-output.dto';
 import { JwtHttpGuard } from './guards/jwt-http.guard';
-import { CurrentUserId } from '../common/http/htpp-param-decorators';
+import { CurrentUser } from '../common/http/htpp-param-decorators';
+import { User } from '../user/persistence/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -44,12 +44,8 @@ export class AuthController {
     @UseGuards(JwtHttpGuard)
     @HttpCode(HttpStatus.NO_CONTENT)
     @Post('/logout')
-    async logout(@CurrentUserId() userId: string): Promise<void> {
-        this.logger.debug(`LOGOUT => ${userId}`);
-        const user = await this.userService.findById(userId);
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+    async logout(@CurrentUser() user: User): Promise<void> {
+        this.logger.debug(`LOGOUT => ${user.id}`);
         await this.authService.logout(user);
     }
 }
