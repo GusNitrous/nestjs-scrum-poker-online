@@ -1,4 +1,4 @@
-import { Room } from '../../../room/persistence/room.entity';
+import { Room } from '../persistence/room.entity';
 import { VotingDto } from './voting.dto';
 import { ResultDto } from './result.dto';
 

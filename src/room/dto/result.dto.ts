@@ -1,4 +1,4 @@
-import { VotingResult } from '../../../room/voting-result';
+import { VotingResult } from '../voting-result';
 
 export class ResultDto {
     static fromResult(result: VotingResult): ResultDto {

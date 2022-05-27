@@ -1,6 +1,6 @@
-import { VotingStatus } from '../../../room/constants/voting-status';
+import { VotingStatus } from '../constants/voting-status';
 import { UserDto } from './user.dto';
-import { Room } from '../../../room/persistence/room.entity';
+import { Room } from '../persistence/room.entity';
 
 
 export class VotingDto {

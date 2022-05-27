@@ -1,6 +1,6 @@
-import { UserRole } from '../../../user/constants/user-role';
-import { User } from '../../../user/persistence/user.entity';
-import { Score } from '../../../room/score';
+import { UserRole } from '../../user/constants/user-role';
+import { User } from '../../user/persistence/user.entity';
+import { Score } from '../score';
 
 export class UserDto {
     static fromUser(user: User): UserDto {
