@@ -8,7 +8,7 @@ import {
     WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { RoomService } from '../../room/room.service';
+import { RoomService } from '../room/room.service';
 import {
     DISPATCH_RESULTS,
     SCORE_DISPATCH,
@@ -18,22 +18,22 @@ import {
     VOTING_FINISHED,
     VOTING_START,
     VOTING_STARTED,
-} from './events';
-import { JwtWsGuard } from '../../auth/guards/jwt-ws.guard';
-import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
-import { User } from '../../user/persistence/user.entity';
-import { RoomDto } from '../voting-room/dto/room.dto';
+} from './ws-events';
+import { JwtWsGuard } from '../auth/guards/jwt-ws.guard';
+import { WsCurrentUser } from '../common/ws/ws-param-decorators';
+import { User } from '../user/persistence/user.entity';
+import { RoomDto } from '../room/dto/room.dto';
 
 
-// Voting Gateway
 @WebSocketGateway({
     cors: {
         origin: '*',
         methods: ['GET', 'POST'],
     },
 })
-export class VotingEventGateway {
-    private readonly logger = new Logger(VotingEventGateway.name);
+@UseGuards(JwtWsGuard)
+export class VotingGateway {
+    private readonly logger = new Logger(VotingGateway.name);
 
     @WebSocketServer()
     server: Server;
@@ -43,7 +43,6 @@ export class VotingEventGateway {
     ) {
     }
 
-    @UseGuards(JwtWsGuard)
     @SubscribeMessage(VOTING_START)
     async start(
         @WsCurrentUser() currentUser: User,
@@ -51,7 +50,7 @@ export class VotingEventGateway {
         @MessageBody() { roomId, restart }: any,
     ): Promise<void> {
         this.logger.debug(`${VOTING_START} => ${roomId}`);
-        const room = await this.roomService.getById(roomId);
+        const room = await this.roomService.findById(roomId);
         if (room.hasActiveVoting && !restart) {
             throw new WsException('Room already has active voting');
         }
@@ -59,7 +58,6 @@ export class VotingEventGateway {
         this.server.in(roomId).emit(VOTING_STARTED, RoomDto.from(room));
     }
 
-    @UseGuards(JwtWsGuard)
     @SubscribeMessage(VOTING_FINISH)
     async stop(
         @WsCurrentUser() currentUser: User,
@@ -73,7 +71,6 @@ export class VotingEventGateway {
         socket.to(roomId).emit(VOTING_FINISHED);
     }
 
-    @UseGuards(JwtWsGuard)
     @SubscribeMessage(SEND_SCORE)
     async sendScore(
         @WsCurrentUser() currentUser: User,
@@ -87,7 +84,6 @@ export class VotingEventGateway {
         this.server.in(roomId).emit(SCORE_DISPATCH, userScore);
     }
 
-    @UseGuards(JwtWsGuard)
     // TODO change event name
     @SubscribeMessage(SHOW_RESULTS)
     async finishVoting(

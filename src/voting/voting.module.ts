@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { VotingRoomGateway } from './voting-room/voting-room.gateway';
-import { VotingEventGateway } from './voting-event/voting-event.gateway';
+import { VotingGateway } from './voting.gateway';
 import { UserModule } from 'src/user/user.module';
 import { RoomModule } from '../room/room.module';
 
 @Module({
     imports: [UserModule, RoomModule],
-    providers: [VotingRoomGateway, VotingEventGateway],
+    providers: [VotingGateway],
 })
 export class VotingModule {
 }
