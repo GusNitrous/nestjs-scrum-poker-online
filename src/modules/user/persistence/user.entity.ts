@@ -1,5 +1,5 @@
 import { UserRole } from '../constants/user-role';
-import { uuid } from '../../common/utils/uuid';
+import { uuid } from '../../../common/utils/uuid';
 
 export type UserId = string;
 

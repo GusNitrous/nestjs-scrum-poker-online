@@ -11,12 +11,12 @@ import {
     USER_JOINED_TO_ROOM,
     USER_LEAVE,
 } from './ws-events';
-import { WsCurrentUser } from '../common/ws/ws-param-decorators';
+import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { User } from '../user/persistence/user.entity';
 import { Server, Socket } from 'socket.io';
 import { RoomDto } from './dto/room.dto';
 import { OnEvent } from '@nestjs/event-emitter';
-import { AuthEvent } from '../common/app-events/auth-event';
+import { AuthEvent } from '../../common/app-events/auth-event';
 
 @WebSocketGateway({
     cors: {

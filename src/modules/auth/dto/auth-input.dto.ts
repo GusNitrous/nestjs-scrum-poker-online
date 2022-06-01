@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional } from 'class-validator';
 import { UserRole } from '../../user/constants/user-role';
-import { IsLogin } from '../../common/decorators/validation-decorators';
+import { IsLogin } from '../../../common/decorators/validation-decorators';
 
 export class AuthInputDto {
     @IsLogin()

@@ -1,5 +1,5 @@
-import { UserRole } from "src/user/constants/user-role";
-import { User } from "src/user/persistence/user.entity";
+import { UserRole } from "src/modules/user/constants/user-role";
+import { User } from "src/modules/user/persistence/user.entity";
 
 export class AuthOutputDto {
     static fromUser(data: Partial<User>): AuthOutputDto {

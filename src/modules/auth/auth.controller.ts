@@ -10,12 +10,12 @@ import {
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 import { AuthService } from './auth.service';
 import { AuthInputDto } from './dto/auth-input.dto';
 import { AuthOutputDto } from './dto/auth-output.dto';
 import { JwtHttpGuard } from './guards/jwt-http.guard';
-import { CurrentUser } from '../common/http/htpp-param-decorators';
+import { CurrentUser } from '../../common/http/htpp-param-decorators';
 import { User } from '../user/persistence/user.entity';
 
 @Controller('auth')

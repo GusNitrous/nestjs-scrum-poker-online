@@ -12,8 +12,8 @@ import { VerifyErrors } from 'jsonwebtoken';
 import { User, UserId } from '../../user/persistence/user.entity';
 import { UserService } from '../../user/user.service';
 import { JwtUserPayload } from '../jwt.types';
-import { WsClient } from '../../common/ws/ws-types';
-import config from '../../config';
+import { WsClient } from '../../../common/ws/ws-types';
+import config from '../../../config';
 
 @Injectable()
 export class JwtWsGuard implements CanActivate {

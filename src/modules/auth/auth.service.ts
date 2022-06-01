@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 import { AuthInputDto } from './dto/auth-input.dto';
 import { AuthOutputDto } from './dto/auth-output.dto';
 import { User } from '../user/persistence/user.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AuthEvent } from '../common/app-events/auth-event';
+import { AuthEvent } from '../../common/app-events/auth-event';
 
 @Injectable()
 export class AuthService {

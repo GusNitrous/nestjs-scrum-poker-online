@@ -20,7 +20,7 @@ import {
     VOTING_STARTED,
 } from './ws-events';
 import { JwtWsGuard } from '../auth/guards/jwt-ws.guard';
-import { WsCurrentUser } from '../common/ws/ws-param-decorators';
+import { WsCurrentUser } from '../../common/ws/ws-param-decorators';
 import { User } from '../user/persistence/user.entity';
 import { RoomDto } from '../room/dto/room.dto';
 

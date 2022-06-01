@@ -2,7 +2,7 @@ import { User } from '../../user/persistence/user.entity';
 import { VotingRound } from '../voting-round';
 import { VotingResult } from '../voting-result';
 import { Logger } from '@nestjs/common';
-import { uuid } from '../../common/utils/uuid';
+import { uuid } from '../../../common/utils/uuid';
 
 
 export type RoomId = string;
