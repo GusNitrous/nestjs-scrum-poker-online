@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScrummarlyTestClient</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <style>
+        body {
+            font-family: Montserrat, Arial, sans-serif;
+        }
+
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hr {
+            width: 100%;
+            height: 1px;
+            background: #ccc;
+        }
+
+        .send-box {
+            margin-bottom: 25px;
+        }
+
+        .subscribe-box {
+            margin-top: 25px;
+        }
+
+    </style>
+</head>
+<body>
+    <main class="main">
+        <div class="send-box">
+            <form>
+                <label>
+                    Input event
+                    <input id="inputEventName" value="on_message" type="text">
+                </label>
+                <button id="subscribeButton" type="button">Subscribe</button>
+            </form>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="subscribe-box">
+            <form>
+                <label>
+                    Event name
+                    <input id="dameInput" value="message" type="text">
+                </label>
+                <label>
+                    Event data
+                    <input id="dataInput" value="message" type="text">
+                </label>
+                <button id="sendButton" type="button">SendEvent</button>
+            </form>
+        </div>
+
+
+        <div id="inputData">
+
+        </div>
+    </main>
+
+    <script type="module">
+        const inputEvent = document.getElementById('dameInput');
+        const dataInput = document.getElementById('dataInput');
+        const sendButton = document.getElementById('sendButton');
+
+        const inputEventName = document.getElementById('inputEventName');
+        const subscribeButton = document.getElementById('subscribeButton');
+
+        const inputData = document.getElementById('inputData');
+
+        import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+        const socket = io({
+            transports: ['websocket'],
+
+        });
+
+        socket.on("connect", () => {
+            console.log("Connect => " + socket.id);
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnect => " + socket.id);
+        });
+
+        sendButton.addEventListener('click', () => {
+            if (!inputEvent.value || !dataInput.value) {
+                alert("Не указано событие или данные");
+                return;
+            }
+
+            socket.emit(inputEvent.value, {message: dataInput.value});
+        });
+
+        subscribeButton.addEventListener('click', () => {
+            if (!inputEventName.value) {
+                alert("Укажите наименование события");
+                return;
+            }
+
+            socket.on(inputEventName.value, onInputEvent);
+        });
+
+        function onInputEvent(rawData) {
+            console.log(rawData);
+
+            const data = JSON.stringify(rawData);
+
+            console.log("Input data => " + data);
+
+            const p = document.createElement("p")
+            p.innerText = data;
+            inputData.append(p);
+        }
+
+    </script>
+</body>
+</html>
