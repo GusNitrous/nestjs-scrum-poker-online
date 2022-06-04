@@ -92,8 +92,12 @@ export class VotingGateway {
         @ConnectedSocket() socket: Socket,
         @MessageBody('roomId') roomId: string,
     ): Promise<void> {
-        this.logger.debug(`${SHOW_RESULTS} => ${roomId}`);
-        const result = await this.roomService.finishVoting(roomId);
-        this.server.in(roomId).emit(DISPATCH_RESULTS, result);
+        try {
+            const result = await this.roomService.finishVoting(roomId);
+            this.server.in(roomId).emit(DISPATCH_RESULTS, result);
+        } catch (err) {
+            this.logger.debug(`${DISPATCH_RESULTS}_ERROR => ${err.message}`);
+            throw new WsException(err.message);
+        }
     }
 }
