@@ -52,6 +52,7 @@
     "@types/node": "^16.11.38",
     "@types/passport": "^1.0.7",
     "@types/passport-jwt": "^3.0.6",
+    "@types/socket.io": "^3.0.2",
     "@types/supertest": "^2.0.12",
     "i": "^0.3.7",
     "jest": "^27.5.1",
