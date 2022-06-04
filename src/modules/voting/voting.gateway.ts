@@ -26,9 +26,10 @@ import { RoomDto } from '../room/dto/room.dto';
 
 
 @WebSocketGateway({
+    transports: ['websocket'],
     cors: {
         origin: '*',
-        methods: ['GET', 'POST'],
+        methods: ['*'],
     },
 })
 @UseGuards(JwtWsGuard)

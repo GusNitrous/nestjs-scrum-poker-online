@@ -19,9 +19,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { AuthEvent } from '../../common/app-events/auth-event';
 
 @WebSocketGateway({
+    transports: ['websocket'],
     cors: {
         origin: '*',
-        methods: ['GET', 'POST'],
+        methods: ['*'],
     },
 })
 @UseGuards(JwtWsGuard)
