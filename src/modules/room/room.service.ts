@@ -4,6 +4,7 @@ import { Room, RoomId } from './persistence/room.entity';
 import { User } from '../user/persistence/user.entity';
 import { VotingRound } from './voting-round';
 import { VotingResult } from './voting-result';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class RoomService {
@@ -21,7 +22,7 @@ export class RoomService {
     async findById(id: RoomId): Promise<Room> {
         const room = this.repository.findById(id);
         if (!room) {
-            const error = new Error('Room not found');
+            const error = new WsException('Room not found');
             this.logger.error(error.message);
             throw error;
         }
