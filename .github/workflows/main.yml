@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push-image
     env:
-      APP_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      APP_IMAGE: ${{ steps.meta.outputs.images }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v3
