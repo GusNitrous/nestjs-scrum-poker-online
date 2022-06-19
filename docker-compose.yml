@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    image: ghcr.io/gusnitrous/nestjs-scrum-poker-online:main
+    image: "${APP_IMAGE}"
     restart: "always"
     tty: true
     env_file:
