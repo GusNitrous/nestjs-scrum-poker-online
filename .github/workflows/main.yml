@@ -72,11 +72,11 @@ jobs:
       - name: Build and deploy image to production
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-          APP_DIRECTORY: /scrummarly.com/server
+          APP_DIRECTORY: scrummarly.com/server
         run: |
           scp -o StrictHostKeyChecking=no -P 4921 -r ./.env ./docker-compose.yml scrummarly@${{ secrets.PROD_INSTANCE_IP }}:$APP_DIRECTORY
           ssh -o StrictHostKeyChecking=no scrummarly@${{ secrets.PROD_INSTANCE_IP }} -p 4921 << 'ENDSSH'
-            cd .$APP_DIRECTORY
+            cd ./$APP_DIRECTORY
             docker pull $APP_IMAGE
             docker-compose up -d
           ENDSSH
