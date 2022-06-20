@@ -58,7 +58,7 @@ jobs:
           echo APP_HOST=0.0.0.0 >> .env
           echo APP_PORT=9000 >> .env
           echo BASE_URL=https://scrummarly.com >> .env
-          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo JWT_SECRET=${{ secrets.PROD_JWT_SECRET }} >> .env
 
       - name: Add the private SSH key to the ssh-agent
         env:

@@ -7,6 +7,6 @@ services:
     env_file:
       - .env
     ports:
-      - "${APP_PORT}:{APP_PORT}"
+      - "${APP_PORT}:${APP_PORT}"
     volumes:
       - .env/:/opt/app/.env
