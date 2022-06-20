@@ -2,7 +2,7 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: [ 'test', 'release/**' ]
+    branches: [ 'main', 'release/**' ]
 
 env:
   REGISTRY: ghcr.io
@@ -72,11 +72,12 @@ jobs:
       - name: Build and deploy image to production
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-          APP_DIRECTORY: scrummarly.com/server
         run: |
-          scp -o StrictHostKeyChecking=no -P 4921 -r ./.env ./docker-compose.yml scrummarly@${{ secrets.PROD_INSTANCE_IP }}:$APP_DIRECTORY
+          scp -o StrictHostKeyChecking=no -P 4921 -r ./.env ./docker-compose.yml scrummarly@${{ secrets.PROD_INSTANCE_IP }}:scrummarly.com/server
           ssh -o StrictHostKeyChecking=no scrummarly@${{ secrets.PROD_INSTANCE_IP }} -p 4921 << 'ENDSSH'
-            cd ./$APP_DIRECTORY
+            cd ./scrummarly.com/server
+            cat .env
+            source .env
             docker pull $APP_IMAGE
             docker-compose up -d
           ENDSSH
