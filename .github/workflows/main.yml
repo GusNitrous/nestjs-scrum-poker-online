@@ -79,5 +79,6 @@ jobs:
             cat .env
             source .env
             docker pull $APP_IMAGE
+            docker-compose down
             docker-compose up -d
           ENDSSH
