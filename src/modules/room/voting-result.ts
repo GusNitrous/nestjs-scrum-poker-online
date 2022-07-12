@@ -18,10 +18,15 @@ export class VotingResult {
         const scoreValues = this.scores
             .map((score) => score.getValue())
             .filter((val) => !isNaN(val));
+
         const sumValues = scoreValues.reduce((acc, val) => (acc += val), 0);
-        this.avg = sumValues && Math.ceil(sumValues / scoreValues.length);
+        const result = (sumValues / scoreValues.length) || 0;
+
+        this.avg = result > 0.5 ? Math.round(result) : result;
+
         this.max = Math.max(...scoreValues);
         this.min = Math.min(...scoreValues);
+
         return this;
     }
 }
