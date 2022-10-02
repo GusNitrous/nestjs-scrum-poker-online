@@ -17,7 +17,7 @@ const { appName, appPort, appHost, appVersion } = config;
     const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: corsOptions });
     await app.listen(appPort, appHost);
 
-    Logger.verbose(`[ApplicationServer] ${appName} successfully started (v${appVersion}): ${config.baseUrl}`);
+    Logger.verbose(`[${appName}] successfully started (v${appVersion}) hosted on ${config.baseUrl}`);
 })().catch((err) => {
-    Logger.error(`[ApplicationServer] ${appName} failed: ` + err);
+    Logger.error(`[${appName}] starting failed: ` + err);
 });
