@@ -22,7 +22,7 @@ export class VotingResult {
         const sumValues = scoreValues.reduce((acc, val) => (acc += val), 0);
         const result = (sumValues / scoreValues.length) || 0;
 
-        this.avg = result > 0.5 ? Math.round(result) : result;
+        this.avg = result > 0 && result < 0.7 ? 0.5 : Math.round(result);
 
         this.max = Math.max(...scoreValues);
         this.min = Math.min(...scoreValues);
