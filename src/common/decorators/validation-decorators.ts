@@ -9,10 +9,10 @@ export function IsLogin(validationOption?: ValidationOptions) {
             options: validationOption,
             validator: {
                 validate(value: any): boolean {
-                    return value && /^[A-Z]+[\w-_.]{3,}\w$/i.test(value);
+                    return value && /^[\w-.]+\w$/i.test(value);
                 },
                 defaultMessage(): string {
-                    return 'Invalid login value';
+                    return 'Only alphanumeric with min length 2';
                 },
             },
         });
