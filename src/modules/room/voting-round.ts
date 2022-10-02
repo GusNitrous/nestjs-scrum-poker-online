@@ -34,10 +34,9 @@ export class VotingRound {
         this.status = VotingStatus.Active;
     }
 
-    // TODO remove method
-    stop(): void {
-        this.room.updateLastActivity();
+    stop(): this {
         this.status = VotingStatus.Finished;
+        return this;
     }
 
     findScoreByUserId(userId: UserId): Score {

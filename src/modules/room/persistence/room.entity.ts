@@ -43,14 +43,6 @@ export class Room {
         return [...this.results];
     }
 
-    getActiveVoting(): VotingRound {
-        this.updateLastActivity();
-        if (!this.hasActiveVoting) {
-            throw new Error('Room has no active voting');
-        }
-        return this.voting;
-    }
-
     addUser(user: User): this {
         this.updateLastActivity();
         this._users.add(user);
@@ -71,8 +63,7 @@ export class Room {
     }
 
     finishVoting(): VotingResult {
-        const result = this.getActiveVoting()?.getResult();
-        this.voting = null;
+        const result = this.voting.stop().getResult();
         this.results.add(result);
         return result;
     }
@@ -83,13 +74,15 @@ export class Room {
     }
 
     incVotingCounter(): number {
-        return ++this._votingCounter;
+        this._votingCounter += 1;
+        return this._votingCounter;
     }
 
     toPlain(): Record<string, any> {
         return {
             [this.constructor.name]: {
                 id: this.id,
+                votingCounter: this._votingCounter,
                 users: this.getUsers().map((user) => user.toPlain()),
                 createdAt: this.createdAt,
             },
