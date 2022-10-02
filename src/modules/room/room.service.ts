@@ -16,7 +16,7 @@ export class RoomService {
     }
 
     async createByOwner(owner: User): Promise<Room> {
-        return this.repository.save(new Room(owner));
+        return this.repository.save(new Room(owner)).addUser(owner);
     }
 
     async findById(id: RoomId): Promise<Room> {
@@ -30,7 +30,7 @@ export class RoomService {
     }
 
     async getVotingByRoomId(roomId: RoomId): Promise<VotingRound> {
-        return (await this.findById(roomId)).getActiveVoting();
+        return (await this.findById(roomId)).voting;
     }
 
     async finishVoting(roomId: RoomId): Promise<VotingResult> {

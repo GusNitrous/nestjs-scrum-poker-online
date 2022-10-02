@@ -40,11 +40,7 @@ export class RoomGateway {
     @SubscribeMessage(CREATE_ROOM)
     async create(@WsCurrentUser() currentUser: User, @ConnectedSocket() socket: Socket): Promise<void> {
         this.logger.debug('REQUEST_ON_CREATING_ROOM => ' + currentUser);
-        const room = (await this.roomService
-            .createByOwner(currentUser))
-            .addUser(currentUser)
-            .startVoting();
-
+        const room = (await this.roomService.createByOwner(currentUser)).startVoting();
         socket.join(room.id);
         this.server.to(socket.id).emit(ROOM_CREATED, room.id);
     }
