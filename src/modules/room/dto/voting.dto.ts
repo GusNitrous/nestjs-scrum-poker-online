@@ -5,15 +5,13 @@ import { Room } from '../persistence/room.entity';
 
 export class VotingDto {
     static fromRoom(room: Room): VotingDto {
-        const voting = room.getActiveVoting();
-        const users = room.getUsers();
-        return new VotingDto(
-            voting.status,
-            users.map((user) =>
-                UserDto.fromUser(user)
-                    .addScore(voting.findScoreByUserId(user.id)),
-            ),
-        );
+        const voting = room.voting;
+        const votingStatus = voting?.status ?? VotingStatus.Waiting;
+        const users = room.getUsers().map((user) => {
+            return UserDto.fromUser(user).addScore(voting?.findScoreByUserId(user.id));
+        });
+
+        return new VotingDto(votingStatus, users);
     }
 
     constructor(
