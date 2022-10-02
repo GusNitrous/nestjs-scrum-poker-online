@@ -48,13 +48,10 @@ export class VotingGateway {
     async start(
         @WsCurrentUser() currentUser: User,
         @ConnectedSocket() socket: Socket,
-        @MessageBody() { roomId, restart }: any,
+        @MessageBody() { roomId }: any,
     ): Promise<void> {
         this.logger.debug(`${VOTING_START} => ${roomId}`);
         const room = await this.roomService.findById(roomId);
-        if (room.hasActiveVoting && !restart) {
-            throw new WsException('Room already has active voting');
-        }
         room.startVoting();
         this.server.in(roomId).emit(VOTING_STARTED, RoomDto.from(room));
     }

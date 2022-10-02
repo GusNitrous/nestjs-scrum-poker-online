@@ -17,6 +17,7 @@ import { Server, Socket } from 'socket.io';
 import { RoomDto } from './dto/room.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AuthEvent } from '../../common/app-events/auth-event';
+import { VOTING_STARTED } from '../voting/ws-events';
 
 @WebSocketGateway({
     transports: ['websocket'],
@@ -53,11 +54,21 @@ export class RoomGateway {
     ): Promise<void> {
         this.logger.debug(`REQUEST_ON_JOIN_USER => ${roomId}`);
         const room = (await this.roomService.findById(roomId)).addUser(currentUser);
+
+        const isShouldStartNewVoting = room.owner?.id === currentUser.id && room.voting?.isFinished;
+        if (isShouldStartNewVoting) {
+            room.startVoting();
+        }
+
         const roomDto = RoomDto.from(room);
 
         socket.join(roomId);
         socket.to(roomId).emit(USER_JOINED_TO_ROOM, roomDto);
         this.server.to(socket.id).emit(USER_JOINED, roomDto);
+
+        if (isShouldStartNewVoting) {
+            this.server.in(roomId).emit(VOTING_STARTED, RoomDto.from(room));
+        }
     }
 
     @SubscribeMessage(LEAVE_ROOM)
